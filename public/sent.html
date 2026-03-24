@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cỗ Máy Thời Gian - Lời Nhắn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #f3f4f6;
+        }
+
+        .handwritten {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .note-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .locked {
+            filter: grayscale(0.5);
+            background: #e5e7eb !important;
+            opacity: 0.9;
+        }
+
+        /* Hiệu ứng loading cho trang */
+        .loader {
+            border-top-color: #4f46e5;
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @keyframes spinner {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8">
+    <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
+        <div class="text-center md:text-left">
+            <h1 class="text-4xl font-bold text-indigo-700">🕰️ Time Capsule</h1>
+            <p class="text-gray-500">Xin chào, <span id="user-display-name"
+                    class="font-bold text-indigo-600">Bạn</span>!</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="create.html"
+                class="bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 shadow-lg transition active:scale-95 font-semibold">
+                + Viết lời nhắn mới
+            </a>
+            <button id="logout-btn"
+                class="bg-white text-red-500 border border-red-200 px-4 py-2.5 rounded-full hover:bg-red-50 transition text-sm font-bold flex items-center gap-2">
+                🚪 Thoát
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+        <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="col-span-full flex justify-center py-20">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('user-display-name').innerText = userData.name || 'Người dùng';
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if (confirm("Bạn có chắc chắn muốn rời khỏi cỗ máy thời gian?")) {
+                try {
+
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                } catch (err) {
+                    console.log("Đã đăng xuất local.");
+                }
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function deleteNote(id) {
+            if (!confirm("Bạn muốn tiêu hủy lời nhắn này vĩnh viễn?")) return;
+
+            try {
+                const res = await fetch(`/api/notes/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("🚀 Đã tiêu hủy lời nhắn thành công!");
+                    await loadNotes();
+                } else {
+                    alert(data.message || "Không thể xóa lời nhắn này!");
+                }
+            } catch (err) {
+                console.error("Lỗi xóa:", err);
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+
+        function updateCountdowns() {
+            const timers = document.querySelectorAll('.countdown-timer');
+            timers.forEach(timer => {
+                const targetDate = new Date(timer.getAttribute('data-date')).getTime();
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    timer.innerHTML = "🔓 Đã mở khóa";
+                    timer.className = "countdown-timer text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded";
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timer.innerHTML = `⏳ ${d}d ${h}h ${m}m ${s}s`;
+            });
+        }
+        async function loadNotes() {
+            const container = document.getElementById('notes-container');
+            try {
+                const res = await fetch('/api/notes/sent', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const notes = await res.json();
+
+                if (notes.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-20">
+                            <p class="text-gray-400 text-lg">Bạn chưa có lời nhắn nào.</p>
+                            <a href="create.html" class="text-indigo-600 underline">Viết cái đầu tiên ngay!</a>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = notes.map(note => {
+                    const isLocked = new Date(note.availableAt) > new Date();
+                    const colorClass = isLocked ? 'bg-white border-gray-300' : 'bg-yellow-50 border-yellow-400';
+
+                    return `
+                    <div class="note-card ${isLocked ? 'locked' : ''} p-6 border-t-8 rounded-2xl flex flex-col justify-between h-72 ${colorClass}">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <span class="text-3xl">${isLocked ? '🔒' : '📜'}</span>
+                                <button onclick="deleteNote('${note._id}')" class="text-gray-400 hover:text-red-500 transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                            <h3 class="text-xl font-bold mt-3 text-gray-800 line-clamp-1">${note.title}</h3>
+                            <div class="mt-4 text-gray-600">
+                                ${isLocked
+                            ? '<p class="italic text-sm text-gray-400">Nội dung đã được mã hóa đến ngày mở...</p>'
+                            : `<p class="handwritten text-xl text-indigo-900 line-clamp-3">"${note.content}"</p>`
+                        }
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-dashed border-gray-300 flex justify-between items-center">
+                            <div class="countdown-timer text-sm font-bold ${isLocked ? 'text-red-500' : 'text-green-600'}" 
+                                 data-date="${note.availableAt}">
+                                 Đang tải...
+                            </div>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest">
+                                ${new Date(note.createdAt).toLocaleDateString('vi-VN')}
+                            </span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+
+                setInterval(updateCountdowns, 1000);
+                updateCountdowns();
+
+            } catch (err) {
+                container.innerHTML = `<p class="text-center text-red-500 py-20">Không thể kết nối máy chủ!</p>`;
+            }
+        }
+
+        loadNotes();
+    </script>
+</body>
+<div class="mb-6">
+    <a href="index.html"
+        class="fixed bottom-8 right-8 flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all active:scale-95 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Quay lại trang chủ</span>
+    </a>
+</div>
+
+</html>

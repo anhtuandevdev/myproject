@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Viết Lời Nhắn Tương Lai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+
+<body class="bg-indigo-50 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">✍️ Viết cho tương lai</h2>
+        <form id="note-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Tiêu đề</label>
+                <input type="text"
+                    class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Nhập tiêu đề...">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Lời nhắn bí mật</label>
+                <textarea rows="4"
+                    class="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                    placeholder="Hãy viết gì đó thật ý nghĩa..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Ngày mở (Unlock)</label>
+                    <input type="datetime-local" class="w-full mt-1 p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email người nhận</label>
+                    <input type="email" class="w-full mt-1 p-2 border rounded-lg"
+                        placeholder="Để trống nếu gửi cho mình">
+                </div>
+            </div>
+            <button type="submit"
+                class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition">
+                🚀 Khóa lời nhắn vào dòng thời gian
+            </button>
+            <a href="index.html" class="block text-center text-sm text-gray-500 mt-4 underline">Quay lại danh sách</a>
+        </form>
+    </div>
+</body>
+<script>
+    const noteForm = document.getElementById('note-form');
+    const submitBtn = noteForm.querySelector('button[type="submit"]');
+
+    noteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert("Bạn cần đăng nhập trước!");
+            window.location.href = 'login.html';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-3 inline text-white" viewBox="0 0 24 24"></svg> Đang niêm phong...`;
+        submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+        const noteData = {
+            title: document.querySelector('input[placeholder="Nhập tiêu đề..."]').value,
+            content: document.querySelector('textarea').value,
+            availableAt: document.querySelector('input[type="datetime-local"]').value,
+            recipientEmail: document.querySelector('input[type="email"]').value
+        };
+
+        try {
+            const response = await fetch('/api/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(noteData)
+            });
+
+            if (response.ok) {
+                alert('🚀 Lời nhắn đã được gửi vào cỗ máy thời gian!');
+                window.location.href = 'index.html';
+            } else {
+                const result = await response.json();
+                alert('❌ Lỗi: ' + (result.message || 'Không thể lưu lời nhắn'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '🚀 Khóa lời nhắn vào dòng thời gian';
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        } catch (error) {
+            alert('⚠️ Lỗi kết nối server!');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '🚀 Khóa lời nhắn vào dòng thời gian';
+        }
+    });
+</script>
+
+</html>
