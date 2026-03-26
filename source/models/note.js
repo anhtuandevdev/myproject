@@ -7,6 +7,8 @@ const NoteSchema = new mongoose.Schema({
     recipientEmail: { type: String },
     availableAt: { type: Date, required: true },
     isSent: { type: Boolean, default: false },
+    isNotifiedOpened: { type: Boolean, default: false },
+    imageUrl: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now }
 });
 

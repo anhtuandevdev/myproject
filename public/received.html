@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cỗ Máy Thời Gian - Lời Nhắn</title>
+    <title>TimeCapsule | Gửi lời nhắn đến tương lai</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://fav.farm/⏳" />
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap"
         rel="stylesheet">
@@ -55,7 +57,10 @@
 <body class="p-4 md:p-8">
     <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
         <div class="text-center md:text-left">
-            <h1 class="text-4xl font-bold text-indigo-700">🕰️ Time Capsule</h1>
+            <h1
+                class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-500">
+                🕰️TimeCapsule
+            </h1>
             <p class="text-gray-500">Xin chào, <span id="user-display-name"
                     class="font-bold text-indigo-600">Bạn</span>!</p>
         </div>
@@ -174,8 +179,15 @@
                     const isLocked = new Date(note.availableAt) > new Date();
                     const colorClass = isLocked ? 'bg-white border-gray-300' : 'bg-yellow-50 border-yellow-400';
 
+                    // Xử lý URL ảnh Cloudinary để làm mờ nếu bị khóa
+                    let displayImageUrl = note.imageUrl;
+                    if (note.imageUrl && isLocked) {
+                        // Thêm hiệu ứng blur và tự động tối ưu hóa ảnh qua URL Cloudinary
+                        displayImageUrl = note.imageUrl.replace('/upload/', '/upload/e_blur:1000,f_auto,q_auto/');
+                    }
+
                     return `
-                    <div class="note-card ${isLocked ? 'locked' : ''} p-6 border-t-8 rounded-2xl flex flex-col justify-between h-72 ${colorClass}">
+                    <div class="note-card ${isLocked ? 'locked' : ''} p-6 border-t-8 rounded-2xl flex flex-col justify-between min-h-[400px] ${colorClass}">
                         <div>
                             <div class="flex justify-between items-start">
                                 <span class="text-3xl">${isLocked ? '🔒' : '📜'}</span>
@@ -184,9 +196,22 @@
                                 </button>
                             </div>
                             <h3 class="text-xl font-bold mt-3 text-gray-800 line-clamp-1">${note.title}</h3>
+                            
+                            ${note.imageUrl ? `
+                                <div class="mt-4 relative rounded-xl overflow-hidden h-40 bg-gray-100 border border-gray-200 shadow-inner">
+                                    <img src="${displayImageUrl}" class="w-full h-full object-cover transition-all duration-700" alt="Memory">
+                                    ${isLocked ? `
+                                        <div class="absolute inset-0 bg-black/20 backdrop-blur-sm flex flex-col items-center justify-center text-white p-2 text-center">
+                                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                            <span class="text-[10px] font-bold uppercase tracking-tighter">Hình ảnh đang được niêm phong</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+
                             <div class="mt-4 text-gray-600">
                                 ${isLocked
-                            ? '<p class="italic text-sm text-gray-400">Nội dung đã được mã hóa đến ngày mở...</p>'
+                            ? '<p class="italic text-sm text-gray-400">Nội dung đang được bảo mật cho tương lai...</p>'
                             : `<p class="handwritten text-xl text-indigo-900 line-clamp-3">"${note.content}"</p>`
                         }
                             </div>

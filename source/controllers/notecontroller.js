@@ -1,4 +1,5 @@
 const Note = require('../models/note');
+const nodemailer = require('nodemailer');
 
 exports.createNote = async (req, res) => {
     try {
@@ -9,10 +10,42 @@ exports.createNote = async (req, res) => {
             title,
             content,
             availableAt,
-            recipientEmail: recipientEmail || req.user.email
+            recipientEmail: recipientEmail || req.user.email,
+            imageUrl: req.file ? req.file.path : ''
         });
 
         await newNote.save();
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const mailOptions = {
+            from: `"TimeCapsule" <${process.env.EMAIL_USER}>`,
+            to: newNote.recipientEmail,
+            subject: `📩 Bạn có một lời nhắn tương lai đang chờ!`,
+            html: `
+                <div style="font-family: sans-serif; border: 1px solid #e0e0e0; padding: 20px; border-radius: 10px;">
+                    <h2 style="color: #4f46e5;">🕰️ TimeCapsule</h2>
+                    <p>Chào bạn,</p>
+                    <p>Ai đó vừa gửi cho bạn một viên nhộng thời gian với tiêu đề: <b>"${newNote.title}"</b>.</p>
+                    <p>Lưu ý: Lời nhắn này hiện đang bị khóa và sẽ sẵn sàng để mở vào ngày <b>${new Date(newNote.availableAt).toLocaleDateString('vi-VN')}</b>.</p>
+                    <p>Đừng lo, chúng tôi sẽ báo cho bạn khi nó sẵn sàng!</p>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (err) => {
+            if (!err) {
+                newNote.isNotifiedSent = true;
+                newNote.save();
+            }
+        });
+
         res.status(201).json({ message: "Đã lưu lời nhắn cho tương lai!", note: newNote });
     } catch (error) {
         res.status(400).json({ error: error.message });

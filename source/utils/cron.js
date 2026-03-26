@@ -11,31 +11,38 @@ const transporter = nodemailer.createTransport({
 });
 
 cron.schedule('* * * * *', async () => {
-    console.log('--- Đang kiểm tra lời nhắn đến hạn... ---');
+    console.log('--- 🔎 Đang quét các lời nhắn đến hạn mở khóa... ---');
     try {
         const now = new Date();
         const expiredNotes = await Note.find({
             availableAt: { $lte: now },
-            isSent: false
+            isNotifiedOpened: false
         });
 
         for (let note of expiredNotes) {
             const mailOptions = {
-                from: `"Cỗ Máy Thời Gian" <${process.env.EMAIL_USER}>`,
+                from: `"TimeCapsule" <${process.env.EMAIL_USER}>`,
                 to: note.recipientEmail,
-                subject: `🔔 Lời nhắn từ quá khứ: ${note.title}`,
+                subject: `🔓 Mở khóa: ${note.title}`,
                 html: `
-                    <h3>Bạn có một lời nhắn đã đến hạn mở!</h3>
-                    <p>Chào bạn, lời nhắn này được gửi từ quá khứ.</p>
-                    <p><b>Tiêu đề:</b> ${note.title}</p>
-                    <p>Xem chi tiết tại: <a href="http://localhost:3000/api/notes/${note._id}">Click vào đây để đọc</a></p>
+                    <div style="font-family: sans-serif; border: 1px solid #4f46e5; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #4f46e5;">🔓 Đã đến giờ mở thư!</h2>
+                        <p>Viên nhộng thời gian từ quá khứ dành cho bạn đã chính thức được mở khóa.</p>
+                        <p><b>Tiêu đề:</b> ${note.title}</p>
+                        <div style="margin-top: 20px;">
+                            <a href="http://localhost:3000/received.html" 
+                               style="background: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-bold;">
+                               Đọc lời nhắn ngay
+                            </a>
+                        </div>
+                    </div>
                 `
             };
 
             await transporter.sendMail(mailOptions);
-            note.isSent = true;
+            note.isNotifiedOpened = true;
             await note.save();
-            console.log(`✅ Đã gửi mail thành công cho: ${note.recipientEmail}`);
+            console.log(`✅ Đã thông báo mở khóa thành công cho: ${note.recipientEmail}`);
         }
     } catch (error) {
         console.error('❌ Lỗi Cron Job:', error);
