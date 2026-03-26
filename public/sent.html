@@ -7,6 +7,7 @@
     <title>TimeCapsule | Gửi lời nhắn đến tương lai</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="components/header.js"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap"
@@ -56,28 +57,6 @@
 </head>
 
 <body class="p-4 md:p-8">
-    <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
-        <div class="text-center md:text-left">
-            <h1
-                class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-500">
-                🕰️TimeCapsule
-            </h1>
-            <p class="text-gray-500">Xin chào, <span id="user-display-name"
-                    class="font-bold text-indigo-600">Bạn</span>!</p>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <a href="create.html"
-                class="bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 shadow-lg transition active:scale-95 font-semibold">
-                + Viết lời nhắn mới
-            </a>
-            <button id="logout-btn"
-                class="bg-white text-red-500 border border-red-200 px-4 py-2.5 rounded-full hover:bg-red-50 transition text-sm font-bold flex items-center gap-2">
-                🚪 Thoát
-            </button>
-        </div>
-    </header>
-
     <main class="max-w-6xl mx-auto">
         <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="col-span-full flex justify-center py-20">
@@ -232,6 +211,12 @@
         loadNotes();
     </script>
 </body>
+<div class="mb-6">
+    <a href="create.html"
+        class="bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 shadow-lg transition active:scale-95 font-semibold">
+        + Viết lời nhắn mới
+    </a>
+</div>
 <div class="mb-6">
     <a href="index.html"
         class="fixed bottom-8 right-8 flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all active:scale-95 z-50">

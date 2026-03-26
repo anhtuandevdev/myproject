@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
     <link rel="stylesheet" href="style.css">
+    <script src="components/header.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -44,20 +45,7 @@
 
 <body class="p-4 md:p-10">
     <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <div>
-                <h1
-                    class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-500">
-                    🕰️TimeCapsule
-                </h1>
-                <p class="text-gray-600">Chào mừng trở lại, <span id="user-name"
-                        class="font-bold text-indigo-600 text-lg">...</span></p>
-            </div>
-            <button id="logout-btn"
-                class="bg-white/50 hover:bg-red-50 text-red-500 px-5 py-2 rounded-full font-bold transition border border-red-100 shadow-sm">
-                Đăng xuất
-            </button>
-        </header>
+
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             <div class="glass-card p-6 text-center stat-card shadow-sm">
@@ -115,7 +103,7 @@
         const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
         if (!token) window.location.href = 'login.html';
-        document.getElementById('user-name').innerText = userData.name || 'Bạn';
+        //document.getElementById('user-name').innerText = userData.name || 'Bạn';
 
         async function fetchStats() {
             const statSent = document.getElementById('stat-sent');
@@ -149,10 +137,10 @@
             }
         }
 
-        document.getElementById('logout-btn').onclick = () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        };
+        // document.getElementById('logout-btn').onclick = () => {
+        //     localStorage.clear();
+        //     window.location.href = 'login.html';
+        // };
 
         fetchStats();
     </script>
