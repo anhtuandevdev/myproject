@@ -11,10 +11,11 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'timecapsule_assets',
-        allowed_formats: ['jpg', 'png', 'jpeg']
-    }
+        folder: 'time_capsule_notes',
+        allowed_formats: ['jpg', 'png', 'jpeg'],
+    },
 });
 
 const uploadCloud = multer({ storage });
+
 module.exports = uploadCloud;

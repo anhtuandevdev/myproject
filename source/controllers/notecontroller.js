@@ -113,6 +113,15 @@ exports.deleteNote = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy lời nhắn hoặc bạn không có quyền xóa!" });
         }
 
+        if (note.imageUrl) {
+            const urlParts = note.imageUrl.split('/');
+            const fileNameWithExtension = urlParts[urlParts.length - 1];
+            const publicIdWithoutExtension = fileNameWithExtension.split('.')[0];
+            const fullPublicId = `time_capsule_notes/${publicIdWithoutExtension}`;
+
+            await cloudinary.uploader.destroy(fullPublicId);
+        }
+
         res.json({ message: "Đã tiêu hủy lời nhắn thành công!" });
     } catch (error) {
         console.error("Lỗi xóa Note:", error);
