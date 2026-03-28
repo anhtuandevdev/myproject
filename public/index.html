@@ -4,106 +4,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeCapsule | Gửi lời nhắn đến tương lai</title>
+    <title>TimeCapsule | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
+
     <link rel="stylesheet" href="style.css">
     <script src="components/header.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="components/create-note-modal.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        dancing: ['Dancing Script', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 24px;
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         }
 
         .stat-card {
-            transition: transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         .nav-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
         }
 
         .nav-card:hover {
             transform: scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-button {
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
         }
     </style>
 </head>
 
-<body class="p-4 md:p-10">
-    <div class="max-w-6xl mx-auto">
+<body class="bg-slate-50 dark:bg-slate-900 min-h-screen pb-20">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 mt-10">
+        
+        <!-- Welcome Section -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-extrabold text-slate-800 dark:text-white mb-2">Chào bạn quay lại! 👋</h1>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá và quản lý những món quà từ thời gian của bạn.</p>
+        </div>
 
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="stat-card glass-card p-6 border-l-4 border-indigo-500">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-xl">📤</div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã gửi</p>
+                </div>
+                <h3 id="stat-sent" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
+            </div>
+            
+            <div class="stat-card glass-card p-6 border-l-4 border-blue-500">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-xl">📩</div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã nhận</p>
+                </div>
+                <h3 id="stat-received" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
+            </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            <div class="glass-card p-6 text-center stat-card shadow-sm">
-                <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Đã gửi</p>
-                <h3 id="stat-sent" class="text-3xl font-bold text-indigo-600 mt-1">0</h3>
+            <div class="stat-card glass-card p-6 border-l-4 border-orange-500">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center text-xl">🔒</div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đang khóa</p>
+                </div>
+                <h3 id="stat-locked" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
             </div>
-            <div class="glass-card p-6 text-center stat-card shadow-sm">
-                <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Đã nhận</p>
-                <h3 id="stat-received" class="text-3xl font-bold text-blue-600 mt-1">0</h3>
-            </div>
-            <div class="glass-card p-6 text-center stat-card shadow-sm">
-                <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Đang khóa</p>
-                <h3 id="stat-locked" class="text-3xl font-bold text-orange-500 mt-1">0</h3>
-            </div>
-            <div class="glass-card p-6 text-center stat-card shadow-sm">
-                <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Đã mở</p>
-                <h3 id="stat-unlocked" class="text-3xl font-bold text-green-500 mt-1">0</h3>
+
+            <div class="stat-card glass-card p-6 border-l-4 border-green-500">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-xl">🔓</div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã mở</p>
+                </div>
+                <h3 id="stat-unlocked" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <a href="received.html" class="nav-card glass-card p-8 flex items-center gap-6 group">
-                <div
-                    class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center text-4xl group-hover:bg-blue-500 group-hover:scale-110 transition duration-300">
+        <!-- Navigation Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <a href="received.html" class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition duration-500">
                     📩
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Hộp Thư Đến</h2>
-                    <p class="text-gray-500 mt-1">Xem lời nhắn người khác gửi cho bạn.</p>
+                    <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Hộp Thư Đến</h2>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Khám phá những lời nhắn bí mật mà người khác hoặc chính bạn trong quá khứ đã chuẩn bị.</p>
+                </div>
+                <div class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </div>
             </a>
 
-            <a href="sent.html" class="nav-card glass-card p-8 flex items-center gap-6 group">
-                <div
-                    class="w-20 h-20 bg-indigo-100 rounded-2xl flex items-center justify-center text-4xl group-hover:bg-indigo-500 group-hover:scale-110 transition duration-300">
+            <a href="sent.html" class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                <div class="w-16 h-16 bg-slate-800 dark:bg-indigo-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition duration-500">
                     📤
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Hộp Thư Đi</h2>
-                    <p class="text-gray-500 mt-1">Quản lý những bí mật bạn đã gửi đi.</p>
+                    <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Hộp Thư Đi</h2>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Nơi lưu giữ các viên nhộng thời gian bạn đã niêm phong và gửi đến tương lai.</p>
+                </div>
+                <div class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </div>
             </a>
         </div>
 
         <div class="text-center">
-            <a href="create.html"
-                class="inline-flex items-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-3xl font-bold text-xl hover:bg-indigo-700 hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 shadow-xl">
-                <span>🚀 Viết lời nhắn mới</span>
-            </a>
+            <button onclick="toggleModal(true)"
+                class="floating-button bg-indigo-600 text-white px-10 py-5 rounded-full hover:bg-indigo-700 shadow-2xl transition-all active:scale-95 font-bold text-lg flex items-center gap-3 mx-auto">
+                <span class="text-2xl mr-1">✍️</span> Niêm phong lời nhắn mới
+            </button>
         </div>
     </div>
 
+    <!-- Background Orbs -->
+    <div class="fixed -top-20 -left-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="fixed top-1/2 -right-20 w-80 h-80 bg-violet-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
     <script>
         const token = localStorage.getItem('token');
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-
         if (!token) window.location.href = 'login.html';
-        //document.getElementById('user-name').innerText = userData.name || 'Bạn';
 
         async function fetchStats() {
             const statSent = document.getElementById('stat-sent');
@@ -111,38 +154,38 @@
             const statLocked = document.getElementById('stat-locked');
             const statUnlocked = document.getElementById('stat-unlocked');
 
+            if (!statSent) return;
+
             try {
                 const [resSent, resRec] = await Promise.all([
                     fetch('/api/notes/sent', { headers: { 'Authorization': `Bearer ${token}` } }),
                     fetch('/api/notes/received', { headers: { 'Authorization': `Bearer ${token}` } })
                 ]);
 
-                const sentData = await resSent.json();
-                const recData = await resRec.json();
-
                 if (resSent.ok && resRec.ok) {
-                    const allNotesRaw = [...sentData, ...recData];
-                    const uniqueNotes = Array.from(new Map(allNotesRaw.map(item => [item['_id'], item])).values());
+                    const sentData = await resSent.json();
+                    const recData = await resRec.json();
 
-                    const now = new Date();
+                    if (Array.isArray(sentData) && Array.isArray(recData)) {
+                        const allNotesRaw = [...sentData, ...recData];
+                        const uniqueNotes = Array.from(new Map(allNotesRaw.map(item => [item['_id'], item])).values());
+                        const now = new Date();
 
-                    statSent.innerText = sentData.length;
-                    statRec.innerText = recData.length;
-
-                    statLocked.innerText = uniqueNotes.filter(n => new Date(n.availableAt) > now).length;
-                    statUnlocked.innerText = uniqueNotes.filter(n => new Date(n.availableAt) <= now).length;
+                        statSent.innerText = sentData.length;
+                        statRec.innerText = recData.length;
+                        statLocked.innerText = uniqueNotes.filter(n => new Date(n.availableAt) > now).length;
+                        statUnlocked.innerText = uniqueNotes.filter(n => new Date(n.availableAt) <= now).length;
+                    }
+                } else if (resSent.status === 401 || resRec.status === 401) {
+                    localStorage.clear();
+                    window.location.href = 'login.html';
                 }
             } catch (err) {
                 console.error("Lỗi Dashboard:", err);
             }
         }
 
-        // document.getElementById('logout-btn').onclick = () => {
-        //     localStorage.clear();
-        //     window.location.href = 'login.html';
-        // };
-
-        fetchStats();
+        document.addEventListener('DOMContentLoaded', fetchStats);
     </script>
 </body>
 

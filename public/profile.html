@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân | TimeCapsule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://fav.farm/⏳" />
+
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="/components/header.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="p-4 md:p-10 min-h-screen">
+    <div class="max-w-4xl mx-auto mt-10">
+        <div class="glass-card p-8 shadow-xl">
+            <div
+                class="flex flex-col md:flex-row items-center gap-6 border-b border-slate-200 dark:border-slate-700 pb-8">
+                <div
+                    class="w-32 h-32 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-5xl border-4 border-white dark:border-slate-800 shadow-lg">
+                    👤
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 id="prof-name" class="text-3xl font-bold">Nguyễn Anh Tuấn</h1>
+                    <p id="prof-email" class="opacity-60">tuantuntun03@gmail.com</p>
+                    <span
+                        class="inline-block mt-2 px-4 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-bold rounded-full">
+                        Thành viên chính thức
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div
+                    class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-white/50 dark:border-slate-700">
+                    <p class="opacity-50 text-sm italic">Ngày tham gia</p>
+                    <p class="font-bold">24/03/2026</p>
+                </div>
+                <div
+                    class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-white/50 dark:border-slate-700">
+                    <p class="opacity-50 text-sm italic">Tổng lời nhắn</p>
+                    <p id="prof-total" class="font-bold text-indigo-600 dark:text-indigo-400 text-xl">8</p>
+                </div>
+                <div
+                    class="bg-white/50 dark:bg-slate-800/50 p-4 rounded-2xl text-center border border-white/50 dark:border-slate-700">
+                    <p class="opacity-50 text-sm italic">Cấp độ</p>
+                    <p class="font-bold text-orange-500">Người du hành</p>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-center gap-4">
+                <button
+                    class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition active:scale-95 shadow-lg">
+                    Chỉnh sửa hồ sơ
+                </button>
+                <a href="index.html"
+                    class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-6 py-2 rounded-xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                    Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.name) document.getElementById('prof-name').innerText = user.name;
+        if (user.email) document.getElementById('prof-email').innerText = user.email;
+    </script>
+</body>
+
+</html>

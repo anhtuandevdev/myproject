@@ -1,5 +1,6 @@
 const Note = require('../models/note');
 const nodemailer = require('nodemailer');
+const cloudinary = require('../middleware/cloudinaryConfig').cloudinary;
 
 exports.createNote = async (req, res) => {
     try {

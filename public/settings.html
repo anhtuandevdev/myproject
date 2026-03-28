@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt | TimeCapsule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://fav.farm/⚙️" />
+    <link rel="stylesheet" href="style.css">
+    <script src="components/header.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        // Khởi tạo theme ngay lập tức để tránh bị nháy màn hình trắng (FOUC)
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        tailwind.config = { darkMode: 'class' }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Tùy chỉnh riêng cho switch nếu chưa có trong style.css */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4f46e5;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-10 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white">
+    <div class="max-w-3xl mx-auto mt-10">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-3xl font-bold flex items-center gap-3">
+                <span>⚙️</span> Cài đặt
+            </h2>
+            <a href="index.html" class="text-sm font-bold text-indigo-600 hover:underline">Quay lại trang chủ</a>
+        </div>
+
+        <div class="space-y-6">
+            <div
+                class="glass-card p-6 flex justify-between items-center shadow-sm border border-slate-200 dark:border-slate-800">
+                <div>
+                    <h3 class="font-bold text-lg">Chế độ tối (Dark Mode)</h3>
+                    <p class="text-sm opacity-60">Thay đổi giao diện phù hợp với môi trường.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div
+                class="glass-card p-6 flex justify-between items-center shadow-sm border border-slate-200 dark:border-slate-800">
+                <div>
+                    <h3 class="font-bold text-lg">Thông báo Email</h3>
+                    <p class="text-sm opacity-60">Nhận thông báo khi đến ngày mở khóa thư.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="glass-card p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                <h3 class="font-bold text-lg mb-5">Tài khoản & Bảo mật</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                        class="flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-900 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all text-left">
+                        <span>🔒</span> Đổi mật khẩu
+                    </button>
+                    <button
+                        class="flex items-center gap-3 px-5 py-4 bg-white dark:bg-slate-900 rounded-2xl font-bold border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition-all text-left">
+                        <span>📱</span> Xác thực 2 lớp
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 border border-red-200 dark:border-red-900/30 bg-red-50/50 dark:bg-red-950/20">
+                <h3 class="font-bold text-red-600 dark:text-red-400 mb-2 flex items-center gap-2">
+                    <span>⚠️</span> Vùng nguy hiểm
+                </h3>
+                <p class="text-sm opacity-70 mb-5">Hành động này sẽ xóa toàn bộ dữ liệu của bạn trên hệ thống và không
+                    thể hoàn tác.</p>
+                <button
+                    class="w-full md:w-auto px-8 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all active:scale-95 shadow-lg shadow-red-200 dark:shadow-none">
+                    Xóa vĩnh viễn tài khoản
+                </button>
+            </div>
+        </div>
+
+        <p class="text-center mt-10 text-[10px] uppercase tracking-widest opacity-30">
+            TimeCapsule v1.0 • Developed by Tuấn
+        </p>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('dark-mode-toggle');
+
+        // Cập nhật trạng thái checkbox dựa trên localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            toggle.checked = true;
+        }
+
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+
+</html>

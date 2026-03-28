@@ -4,223 +4,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cỗ Máy Thời Gian - Hành Trình Bắt Đầu</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TimeCapsule | Bắt đầu hành trình</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://fav.farm/⏳" />
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        dancing: ['Dancing Script', 'cursive'],
+                    },
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.1)',
+                        'glass-dark': 'rgba(15, 23, 42, 0.8)',
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         body {
+            font-family: 'Inter', sans-serif;
             background: #0f172a;
-            height: 100vh;
+        }
+
+        .auth-container {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .visual-side {
+            position: relative;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            font-family: 'Nunito', sans-serif;
+            padding: 4rem;
         }
 
-        .main-container {
-            width: 90vw;
-            max-width: 1100px;
-            height: 650px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            display: flex;
-            overflow: hidden;
-            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Phần Custom (Trái - 60%) */
-        .custom-area {
-            flex: 1.5;
-            background: linear-gradient(-45deg, #1e1b4b, #312e81, #4338ca, #581c87);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px;
-            position: relative;
-            color: white;
-        }
-
-        .custom-area::before {
-            content: "";
+        .visual-side::before {
+            content: '';
             position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.3;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('login_banner_time_capsule_1774718071587.png') center/cover no-repeat;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
         }
 
-        @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        /* Phần Form (Phải - 40%) */
         .auth-side {
-            flex: 1;
-            background: white;
-            padding: 50px;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 4rem;
             position: relative;
+        }
+
+        .dark .auth-side {
+            background: #0f172a;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .floating-obj {
+            position: absolute;
+            pointer-events: none;
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+            .visual-side {
+                display: none;
+            }
+            .auth-side {
+                padding: 2rem;
+            }
         }
 
         .input-group input {
-            background: #f8fafc;
-            border: 2px solid transparent;
             transition: all 0.3s ease;
         }
 
         .input-group input:focus {
-            border-color: #6366f1;
-            background: white;
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.15);
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.2);
         }
 
-        .floating-icon {
-            animation: float 6s ease-in-out infinite;
+        .btn-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transition: all 0.3s ease;
         }
 
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(5deg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-                height: auto;
-                width: 95vw;
-                margin-top: 20px;
-            }
-
-            .custom-area {
-                padding: 40px;
-                text-align: center;
-            }
-
-            .auth-side {
-                padding: 30px;
-            }
+        .btn-gradient:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.4);
         }
     </style>
 </head>
 
-<body>
-    <div class="main-container">
-        <div class="custom-area overflow-hidden">
-            <div class="relative z-10">
-                <div class="floating-icon text-6xl mb-6">✉️</div>
-                <h1 class="text-5xl font-extrabold leading-tight mb-4">
-                    Gửi gắm <br> <span class="text-indigo-300">Tương lai</span>
+<body class="selection:bg-indigo-100 dark:selection:bg-indigo-900">
+    <div class="auth-container">
+        <!-- Visual Side -->
+        <div class="visual-side hidden lg:flex">
+            <div class="relative z-10 text-white max-w-lg">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-500/20 backdrop-blur-md border border-indigo-400/30 text-xs font-bold uppercase tracking-widest mb-6">
+                    🕰️ Hành trình vượt thời gian
+                </span>
+                <h1 class="text-6xl font-black mb-6 leading-tight">
+                    Lưu giữ những <span class="text-indigo-300">ký ức</span> quý giá
                 </h1>
-                <p class="text-indigo-100/70 text-lg max-w-sm leading-relaxed">
-                    Mỗi lời nhắn là một mảnh ghép của hành trình. Hãy để chúng đợi bạn ở một ngày mai thật đẹp.
+                <p class="text-lg text-indigo-100/80 leading-relaxed font-light">
+                    Mỗi lời nhắn là một viên nhộng gửi đến ngày mai. Hãy để kỷ niệm của bạn được đánh thức vào đúng thời điểm hoàn hảo nhất.
                 </p>
+                
+                <div class="mt-12 flex items-center gap-6">
+                    <div class="flex -space-x-3">
+                        <img class="w-10 h-10 rounded-full border-2 border-indigo-900" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="user">
+                        <img class="w-10 h-10 rounded-full border-2 border-indigo-900" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aria" alt="user">
+                        <img class="w-10 h-10 rounded-full border-2 border-indigo-900" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" alt="user">
+                    </div>
+                    <p class="text-sm font-medium text-indigo-200">Hàng ngàn người đã bắt đầu...</p>
+                </div>
             </div>
-
-            <div class="absolute top-1/4 right-10 w-2 h-2 bg-white rounded-full animate-ping"></div>
-            <div class="absolute bottom-1/4 left-20 w-1 h-1 bg-indigo-200 rounded-full animate-pulse"></div>
+            
+            <!-- Abstract Shapes -->
+            <div class="floating-obj w-96 h-96 bg-indigo-500/30 -top-20 -left-20"></div>
+            <div class="floating-obj w-64 h-64 bg-violet-500/20 bottom-20 right-20"></div>
         </div>
 
-        <div class="auth-side">
-            <div class="mb-10 text-center lg:text-left">
-                <h2 id="form-title" class="text-3xl font-black text-slate-800 tracking-tight">Chào bạn!</h2>
-                <p id="form-subtitle" class="text-slate-400 text-sm mt-1 font-medium">Đăng nhập để xem các tin nhắn thời
-                    gian.</p>
-            </div>
-
-            <form id="auth-form" class="space-y-6">
-                <div id="name-field" class="hidden transition-all duration-300 input-group">
-                    <label
-                        class="block text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] mb-1.5 ml-1">Tên
-                        hành khách</label>
-                    <input type="text" id="name" placeholder="Tên của bạn..."
-                        class="w-full p-4 rounded-2xl outline-none text-slate-600 font-semibold">
+        <!-- Auth Side -->
+        <div class="auth-side relative overflow-hidden dark:text-white">
+            <div class="max-w-md w-full mx-auto relative z-10">
+                <div class="mb-10">
+                    <div class="flex items-center gap-2 mb-8 group cursor-pointer">
+                        <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition">
+                            <span class="text-xl">⌛</span>
+                        </div>
+                        <span class="text-2xl font-black font-dancing tracking-tighter text-slate-800 dark:text-white">TimeCapsule</span>
+                    </div>
+                    
+                    <h2 id="form-title" class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 leading-tight">
+                        Mừng bạn trở lại! 👋
+                    </h2>
+                    <p id="form-subtitle" class="text-slate-500 dark:text-slate-400 font-medium">
+                        Điền thông tin để bắt đầu gửi lời nhắn cho tương lai.
+                    </p>
                 </div>
 
-                <div class="input-group">
-                    <label
-                        class="block text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] mb-1.5 ml-1">Email</label>
-                    <input type="email" id="email" required placeholder="name@example.com"
-                        class="w-full p-4 rounded-2xl outline-none text-slate-600 font-semibold">
-                </div>
+                <form id="auth-form" class="space-y-5">
+                    <div id="name-field" class="hidden transition-all duration-300 input-group">
+                        <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-2 ml-1">
+                            Tên của bạn
+                        </label>
+                        <input type="text" id="name" placeholder="John Doe" 
+                               class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none font-semibold">
+                    </div>
 
-                <div class="input-group">
-                    <label
-                        class="block text-[10px] font-bold text-indigo-500 uppercase tracking-[0.2em] mb-1.5 ml-1">Mật
-                        khẩu</label>
-                    <input type="password" id="password" required placeholder="••••••••"
-                        class="w-full p-4 rounded-2xl outline-none text-slate-600 font-semibold">
-                </div>
+                    <div class="input-group">
+                        <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-2 ml-1">
+                            Email
+                        </label>
+                        <input type="email" id="email" required placeholder="name@example.com" 
+                               class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none font-semibold text-slate-900 dark:text-white">
+                    </div>
 
-                <div id="forgot-password-link" class="text-right">
-                    <button type="button" onclick="toggleModal(true)"
-                        class="text-xs text-slate-400 hover:text-indigo-600 transition-colors font-medium">
-                        Bạn quên mật mã?
+                    <div class="input-group">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest ml-1">
+                                Mật khẩu
+                            </label>
+                            <button id="forgot-password-link" type="button" onclick="toggleModal(true)" 
+                                    class="text-xs font-semibold text-indigo-500 hover:text-indigo-700 transition">
+                                Quên mật mã?
+                            </button>
+                        </div>
+                        <input type="password" id="password" required placeholder="••••••••" 
+                               class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none font-semibold text-slate-900 dark:text-white">
+                    </div>
+
+                    <button type="submit" 
+                            class="btn-gradient w-full py-4 rounded-2xl text-white font-bold text-lg shadow-xl mt-4 flex items-center justify-center gap-3">
+                        <span id="btn-text">Đăng Nhập</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
                     </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        <span id="toggle-text">Chưa có tài khoản?</span>
+                        <button id="toggle-btn" class="text-indigo-600 font-bold hover:underline decoration-2 underline-offset-4 ml-1">
+                            Tạo tài khoản mới
+                        </button>
+                    </p>
                 </div>
-
-                <button type="submit"
-                    class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-indigo-600 transition-all shadow-xl hover:shadow-indigo-200 active:scale-[0.98] flex items-center justify-center gap-3">
-                    <span id="btn-text">Đăng Nhập Ngay</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </button>
-            </form>
-
-            <div class="mt-10 pt-6 border-t border-slate-50 text-center">
-                <p class="text-sm text-slate-400 font-medium">
-                    <span id="toggle-text">Chưa có tài khoản?</span>
-                    <button id="toggle-btn"
-                        class="text-indigo-600 font-bold ml-1 hover:text-indigo-800 transition-all underline decoration-2 underline-offset-4">
-                        Tạo tài khoản
-                    </button>
-                </p>
             </div>
+            
+            <!-- Orbs for Auth Side -->
+            <div class="floating-obj w-64 h-64 bg-indigo-500/5 -bottom-20 -right-20"></div>
         </div>
     </div>
 
-    <div id="forgot-modal"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 transition-all">
-        <div class="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm border border-slate-100">
-            <h3 class="text-2xl font-black mb-2 text-slate-800">Khôi phục</h3>
-            <p class="text-sm text-slate-400 mb-8 font-medium italic">Chúng tôi sẽ gửi một tín hiệu đến email của bạn.
-            </p>
+    <!-- Forgot Password Modal -->
+    <div id="forgot-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 transition-all">
+        <div class="glass-card bg-white dark:bg-slate-900 p-8 w-full max-w-sm border border-slate-200 dark:border-slate-800">
+            <h3 class="text-2xl font-black mb-2 dark:text-white">Khôi phục</h3>
+            <p class="text-sm opacity-60 mb-8 font-medium italic dark:text-slate-400">Chúng tôi sẽ gửi một tín hiệu đến email của bạn.</p>
 
-            <input type="email" id="forgot-email" placeholder="Email của bạn..."
-                class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 mb-6 text-slate-600 font-semibold">
+            <input type="email" id="forgot-email" placeholder="Email của bạn..." 
+                   class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 focus:border-indigo-500 outline-none mb-6 font-semibold">
 
             <div class="flex space-x-3">
-                <button onclick="toggleModal(false)"
-                    class="flex-1 px-4 py-3 text-slate-400 font-bold hover:text-slate-600 transition">Hủy</button>
-                <button onclick="handleForgotPassword()"
-                    class="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Gửi
-                    Mail</button>
+                <button onclick="toggleModal(false)" class="flex-1 px-4 py-3 opacity-50 font-bold hover:opacity-100 transition dark:text-white">Hủy</button>
+                <button onclick="handleForgotPassword()" class="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg">Gửi Mail</button>
             </div>
         </div>
     </div>
@@ -239,19 +260,18 @@
 
         toggleBtn.addEventListener('click', () => {
             isLogin = !isLogin;
-
-            formTitle.innerText = isLogin ? 'Chào bạn!' : 'Người mới?';
-            formSubtitle.innerText = isLogin ? 'Đăng nhập để xem các dòng thời gian.' : 'Bắt đầu lưu giữ những kỷ niệm vượt thời gian.';
+            formTitle.innerText = isLogin ? 'Mừng bạn trở lại! 👋' : 'Bắt đầu hành trình 🚀';
+            formSubtitle.innerText = isLogin ? 'Điền thông tin để bắt đầu gửi lời nhắn cho tương lai.' : 'Mở tài khoản để lưu giữ những kỷ niệm vượt thời gian.';
             toggleText.innerText = isLogin ? 'Chưa có tài khoản?' : 'Đã có tài khoản?';
-            toggleBtn.innerText = isLogin ? 'Tạo tài khoản' : 'Đăng nhập ngay';
-            btnText.innerText = isLogin ? 'Đăng Nhập Ngay' : 'Đăng Ký Tài Khoản';
+            toggleBtn.innerText = isLogin ? 'Tạo tài khoản mới' : 'Đăng nhập ngay';
+            btnText.innerText = isLogin ? 'Đăng Nhập' : 'Đăng Ký Ngay';
 
             if (!isLogin) {
                 nameField.classList.remove('hidden');
+                setTimeout(() => nameField.classList.add('opacity-100'), 10);
             } else {
                 nameField.classList.add('hidden');
             }
-
             forgotLink.classList.toggle('hidden', !isLogin);
         });
 
@@ -278,14 +298,14 @@
                         localStorage.setItem('user', JSON.stringify(data.user));
                         window.location.href = 'index.html';
                     } else {
-                        alert('✅ Đăng ký thành công! Hãy đăng nhập để bắt đầu hành trình.');
+                        alert('✅ Đăng ký thành công! Hãy đăng nhập để bắt đầu.');
                         toggleBtn.click();
                     }
                 } else {
                     alert('❌ ' + (data.message || 'Có lỗi xảy ra'));
                 }
             } catch (err) {
-                alert('⚠️ Lỗi kết nối máy chủ thời gian!');
+                alert('⚠️ Lỗi kết nối hệ thống!');
             }
         });
 
@@ -307,8 +327,15 @@
                 alert(data.message || "Kiểm tra email của bạn!");
                 if (res.ok) toggleModal(false);
             } catch (err) {
-                alert("⚠️ Lỗi hệ thống, vui lòng thử lại sau.");
+                alert("⚠️ Lỗi hệ thống!");
             }
+        }
+
+        // Check theme
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
         }
     </script>
 </body>

@@ -4,116 +4,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeCapsule | Gửi lời nhắn đến tương lai</title>
+    <title>Lời nhắn đã nhận | TimeCapsule</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="components/header.js"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap"
-        rel="stylesheet">
+    <script src="components/create-note-modal.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="components/header.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
     <style>
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .received-card {
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .received-card:hover {
+            transform: translateY(-10px) rotate(-0.5deg);
+        }
+
+        .received-card.locked {
+            cursor: not-allowed;
+            filter: grayscale(0.5) opacity(0.85);
         }
 
         .handwritten {
             font-family: 'Dancing Script', cursive;
         }
 
-        .note-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
         }
 
-        .note-card:hover {
-            transform: translateY(-5px) rotate(1deg);
-            shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        /* Pulsing background for unlocked notes */
+        .unlocked-bg {
+            background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
         }
 
-        .locked {
-            filter: grayscale(0.5);
-            background: #e5e7eb !important;
-            opacity: 0.9;
+        .dark .unlocked-bg {
+            background: linear-gradient(135deg, #78350f20 0%, #451a0330 100%);
         }
 
-        .loader {
-            border-top-color: #4f46e5;
-            animation: spinner 1.5s linear infinite;
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
-        @keyframes spinner {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+        .shimmer-text {
+            background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
         }
     </style>
 </head>
 
-<body class="p-4 md:p-8">
+<body class="bg-indigo-50/30 dark:bg-slate-900 min-h-screen p-4 md:p-10">
+    <main class="max-w-6xl mx-auto mt-10">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white dark:bg-slate-800/40 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl">
+            <div class="flex items-center gap-6">
+                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                    ✉️
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black text-slate-800 dark:text-white">Hộp thư thời gian</h1>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá những khoảnh khắc đang đợi bạn mở khóa.</p>
+                </div>
+            </div>
+            <button onclick="toggleModal(true)"
+                class="bg-slate-900 dark:bg-indigo-600 text-white px-10 py-4 rounded-2xl hover:bg-indigo-700 shadow-xl transition-all active:scale-95 font-bold flex items-center gap-2">
+                Viết một lá thư mới
+            </button>
+        </div>
 
-    <main class="max-w-6xl mx-auto">
-        <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="col-span-full flex justify-center py-20">
-                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+        <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="col-span-full loader-container">
+                <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
         </div>
     </main>
 
+    <a href="index.html"
+        class="fixed bottom-10 right-10 flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-2xl hover:bg-indigo-600 transition-all hover:-translate-y-2 active:scale-95 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Về Trang Chủ</span>
+    </a>
+
     <script>
         const token = localStorage.getItem('token');
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-
-        if (!token) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('user-display-name').innerText = userData.name || 'Người dùng';
-        }
-
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            if (confirm("Bạn có chắc chắn muốn rời khỏi cỗ máy thời gian?")) {
-                try {
-
-                    await fetch('/api/auth/logout', {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                } catch (err) {
-                    console.log("Đã đăng xuất local.");
-                }
-                localStorage.clear();
-                window.location.href = 'login.html';
-            }
-        });
+        if (!token) window.location.href = 'login.html';
 
         async function deleteNote(id) {
-            if (!confirm("Bạn muốn tiêu hủy lời nhắn này vĩnh viễn?")) return;
-
+            if (!confirm("⚠️ Bạn muốn tiêu hủy kỷ niệm này vĩnh viễn khỏi dòng thời gian?")) return;
             try {
                 const res = await fetch(`/api/notes/${id}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-
-                const data = await res.json();
-
                 if (res.ok) {
-                    alert("🚀 Đã tiêu hủy lời nhắn thành công!");
-                    await loadNotes();
+                    alert("🚀 Đã tiêu hủy thành công!");
+                    loadNotes();
                 } else {
-                    alert(data.message || "Không thể xóa lời nhắn này!");
+                    const data = await res.json();
+                    alert(data.message || "Không thể xóa!");
                 }
             } catch (err) {
-                console.error("Lỗi xóa:", err);
-                alert("Lỗi kết nối máy chủ!");
+                alert("Lỗi máy chủ!");
             }
         }
 
@@ -125,8 +133,11 @@
                 const distance = targetDate - now;
 
                 if (distance < 0) {
-                    timer.innerHTML = "🔓 Đã mở khóa";
-                    timer.className = "countdown-timer text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded";
+                    timer.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="text-green-600 dark:text-green-400 font-black">🔓 Đã sẵn sàng mở thư</span>
+                        </div>`;
                     return;
                 }
 
@@ -135,106 +146,108 @@
                 const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-                timer.innerHTML = `⏳ ${d}d ${h}h ${m}m ${s}s`;
+                timer.innerHTML = `
+                    <div class="flex items-center gap-2 text-red-500 dark:text-red-400 font-bold">
+                        <span class="text-[10px] uppercase font-bold opacity-60">Mở trong:</span>
+                        <span>${d}d ${h}h ${m}m ${s}s</span>
+                    </div>`;
             });
         }
+
         async function loadNotes() {
             const container = document.getElementById('notes-container');
             try {
                 const res = await fetch('/api/notes/received', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        localStorage.clear();
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    throw new Error('Lỗi máy chủ');
+                }
+
                 const notes = await res.json();
 
-                if (notes.length === 0) {
+                if (!Array.isArray(notes) || notes.length === 0) {
                     container.innerHTML = `
-                        <div class="col-span-full text-center py-20">
-                            <p class="text-gray-400 text-lg">Bạn chưa có lời nhắn nào.</p>
-                            <a href="create.html" class="text-indigo-600 underline">Viết cái đầu tiên ngay!</a>
+                        <div class="col-span-full text-center py-20 bg-white/40 dark:bg-slate-800/40 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
+                             <div class="text-6xl mb-6">🏜️</div>
+                            <p class="text-slate-400 dark:text-slate-500 text-xl font-medium mb-6">Bạn chưa nhận được lời nhắn nào.</p>
+                            <button onclick="toggleModal(true)" class="text-indigo-600 underline font-bold">Tự gửi một món quà thời gian cho bản thân?</button>
                         </div>`;
                     return;
                 }
 
                 container.innerHTML = notes.map(note => {
                     const isLocked = new Date(note.availableAt) > new Date();
-                    const colorClass = isLocked ? 'bg-white border-gray-300' : 'bg-yellow-50 border-yellow-400';
-
-                    // Xử lý URL ảnh Cloudinary để làm mờ nếu bị khóa
                     let displayImageUrl = note.imageUrl;
+
                     if (note.imageUrl && isLocked) {
-                        // Thêm hiệu ứng blur và tự động tối ưu hóa ảnh qua URL Cloudinary
                         displayImageUrl = note.imageUrl.replace('/upload/', '/upload/e_blur:1000,f_auto,q_auto/');
                     }
 
                     return `
-                    <div class="note-card ${isLocked ? 'locked' : ''} p-6 border-t-8 rounded-2xl flex flex-col justify-between min-h-[400px] ${colorClass}">
-                        <div>
-                            <div class="flex justify-between items-start">
-                                <span class="text-3xl">${isLocked ? '🔒' : '📜'}</span>
-                                <button onclick="deleteNote('${note._id}')" class="text-gray-400 hover:text-red-500 transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
+                    <div class="received-card ${isLocked ? 'locked' : ''} glass-card relative overflow-hidden flex flex-col min-h-[440px] ${isLocked ? 'bg-white' : 'unlocked-bg border border-indigo-100 dark:border-indigo-900/50 shadow-indigo-100/50 dark:shadow-indigo-950/20'}">
+                        
+                        <!-- Status Badge & Menu -->
+                        <div class="p-6 pb-0 flex justify-between items-start">
+                             <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-2xl rounded-2xl shadow-sm">
+                                ${isLocked ? '🔒' : '📜'}
                             </div>
-                            <h3 class="text-xl font-bold mt-3 text-gray-800 line-clamp-1">${note.title}</h3>
+                            <button onclick="deleteNote('${note._id}')" 
+                                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Content Area -->
+                        <div class="p-6 flex-1">
+                            <h3 class="text-2xl font-black ${isLocked ? 'text-slate-800 dark:text-white' : 'shimmer-text'} mb-4 line-clamp-1">${note.title}</h3>
                             
                             ${note.imageUrl ? `
-                                <div class="mt-4 relative rounded-xl overflow-hidden h-40 bg-gray-100 border border-gray-200 shadow-inner">
-                                    <img src="${displayImageUrl}" class="w-full h-full object-cover transition-all duration-700" alt="Memory">
+                                <div class="relative w-full h-40 rounded-3xl overflow-hidden mb-6 group border border-slate-100 dark:border-slate-800 shadow-lg">
+                                    <img src="${displayImageUrl}" class="w-full h-full object-cover" alt="Image">
                                     ${isLocked ? `
-                                        <div class="absolute inset-0 bg-black/20 backdrop-blur-sm flex flex-col items-center justify-center text-white p-2 text-center">
-                                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                                            <span class="text-[10px] font-bold uppercase tracking-tighter">Hình ảnh đang được niêm phong</span>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            ` : ''}
+                                        <div class="absolute inset-0 bg-indigo-950/40 backdrop-blur-xl flex flex-col items-center justify-center text-white">
+                                            <span class="text-[10px] font-black uppercase tracking-[0.3em] mb-2">Đang Niêm Phong</span>
+                                            <div class="w-1 bg-white/30 h-8 rounded-full"></div>
+                                        </div>` : ''}
+                                </div>` : ''}
 
-                            <div class="mt-4 text-gray-600">
+                            <div class="relative">
                                 ${isLocked
-                            ? '<p class="italic text-sm text-gray-400">Nội dung đang được bảo mật cho tương lai...</p>'
-                            : `<p class="handwritten text-xl text-indigo-900 line-clamp-3">"${note.content}"</p>`
+                            ? '<div class="space-y-4 opacity-40"><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-full"></div><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-4/5"></div><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-3/4"></div></div>'
+                            : `<p class="handwritten text-2xl text-slate-700 dark:text-slate-300 line-clamp-3">"${note.content}"</p>`
                         }
                             </div>
                         </div>
-                        
-                        <div class="mt-4 pt-4 border-t border-dashed border-gray-300 flex justify-between items-center">
-                            <div class="countdown-timer text-sm font-bold ${isLocked ? 'text-red-500' : 'text-green-600'}" 
-                                 data-date="${note.availableAt}">
-                                 Đang tải...
+
+                        <!-- Footer Countdown & Meta -->
+                        <div class="px-6 py-6 bg-slate-50/50 dark:bg-slate-800/40 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                            <div class="countdown-timer" data-date="${note.availableAt}">
+                                Đang tải...
                             </div>
-                            <span class="text-[10px] text-gray-400 uppercase tracking-widest">
-                                ${new Date(note.createdAt).toLocaleDateString('vi-VN')}
-                            </span>
+                            <div class="flex justify-between items-center mt-2 opacity-50 text-[10px] font-black uppercase tracking-widest">
+                                <span>Niêm phong vào:</span>
+                                <span>${new Date(note.createdAt).toLocaleDateString('vi-VN')}</span>
+                            </div>
                         </div>
-                    </div>
-                    `;
+                    </div>`;
                 }).join('');
 
                 setInterval(updateCountdowns, 1000);
                 updateCountdowns();
 
             } catch (err) {
-                container.innerHTML = `<p class="text-center text-red-500 py-20">Không thể kết nối máy chủ!</p>`;
+                container.innerHTML = `<p class="text-center text-red-500 py-20 font-bold">⚠️ Hệ thống hộp thư thời gian gặp sự cố!</p>`;
             }
         }
-
         loadNotes();
     </script>
 </body>
-<div class="mb-6">
-    <a href="create.html"
-        class="bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 shadow-lg transition active:scale-95 font-semibold">
-        + Viết lời nhắn mới
-    </a>
-</div>
-<div class="mb-6">
-    <a href="index.html"
-        class="fixed bottom-8 right-8 flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-bold shadow-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all active:scale-95 z-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        <span>Quay lại trang chủ</span>
-    </a>
-</div>
 
 </html>

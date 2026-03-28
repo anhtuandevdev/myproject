@@ -1,26 +1,44 @@
-/* Time Capsule - Future Messages Theme
-  Style: Modern, Emotional, Futuristic & Soft
+/* Time Capsule - Future Messages Theme 
+  Author: Tuấn & Gemini
+  Style: Modern Glassmorphism, Adaptive Dark Mode
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap');
 
 :root {
-    /* Color Palette */
-    --primary-gradient: linear-gradient(135deg, #6C63FF, #4DA8DA, #FF8FAB);
-    --bg-light: #F9FAFF;
-    --text-main: #333333;
-    --text-muted: #666666;
-    --white-glass: rgba(255, 255, 255, 0.7);
-    --accent-color: #6C63FF;
-    --glow-shadow: 0 10px 30px rgba(108, 99, 255, 0.2);
+    /* Light Mode Colors */
+    --bg-body: #f8fafc;
+    --bg-gradient: linear-gradient(-45deg, #f1f5f9, #e2e8f0, #f8fafc, #f1f5f9);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --input-bg: #ffffff;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 
-    /* Transitions & Corners */
-    --radius-lg: 20px;
-    --radius-md: 12px;
+    /* Global Accents */
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --accent-pink: #f472b6;
+    --radius-lg: 24px;
+    --radius-md: 16px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 1. Global Reset & Base */
+/* Dark Mode Overrides */
+.dark {
+    --bg-body: #0f172a;
+    --bg-gradient: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #111827);
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* 1. Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -28,18 +46,18 @@
 }
 
 body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg-light);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-body);
+    background: var(--bg-gradient);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
     color: var(--text-main);
     line-height: 1.6;
-    overflow-x: hidden;
-    /* Gradient động nhẹ ở background */
-    background: linear-gradient(-45deg, #f9faff, #f1f3ff, #f9faff, #fff1f6);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+    transition: background 0.5s ease, color 0.3s ease;
 }
 
-@keyframes gradientBG {
+@keyframes gradientShift {
     0% {
         background-position: 0% 50%;
     }
@@ -56,191 +74,124 @@ body {
 h1,
 h2,
 h3 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
+    font-family: 'Inter', sans-serif;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-/* 2. Navbar */
-.navbar {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.8);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(108, 99, 255, 0.1);
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: 800;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* 3. Form Input Styles */
-.form-card {
-    background: white;
-    padding: 32px;
+/* 2. Reusable Components */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    shadow: var(--glow-shadow);
-    border: 1px solid rgba(108, 99, 255, 0.05);
-    margin: 40px auto;
-    max-width: 600px;
-    animation: fadeIn 0.8s ease-out;
-}
-
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-input,
-textarea {
-    width: 100%;
-    padding: 14px 18px;
-    border-radius: var(--radius-md);
-    border: 2px solid #eee;
-    background: #fdfdfd;
-    font-size: 16px;
+    box-shadow: var(--card-shadow);
     transition: var(--transition);
+}
+
+.input-style {
+    background: var(--input-bg);
+    border: 2px solid var(--glass-border);
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.input-style:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
     outline: none;
 }
 
-input:focus,
-textarea:focus {
-    border-color: #6C63FF;
-    background: white;
-    box-shadow: 0 0 15px rgba(108, 99, 255, 0.15);
+/* 3. Typography & Utilities */
+.handwritten {
+    font-family: 'Dancing Script', cursive;
+    color: var(--primary);
 }
 
-/* 4. Buttons */
+.text-muted {
+    color: var(--text-muted);
+}
+
+/* 4. Message Cards Styling */
+.note-card {
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.note-card:hover {
+    transform: translateY(-8px) rotate(1deg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.note-card.locked {
+    filter: grayscale(0.2);
+    opacity: 0.85;
+}
+
+.note-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(225deg, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+}
+
+/* 5. Custom Loader */
+.loader {
+    border: 4px solid var(--glass-border);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 6. Buttons */
 .btn-primary {
     background: var(--primary-gradient);
-    color: white;
-    padding: 14px 28px;
+    color: white !important;
+    padding: 12px 24px;
     border-radius: var(--radius-md);
-    border: none;
     font-weight: 700;
-    cursor: pointer;
     transition: var(--transition);
-    display: inline-block;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-/* 5. Message Cards (Glassmorphism) */
-.message-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-    margin: 40px 0;
-}
-
-.card {
-    background: var(--white-glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 24px;
-    border-radius: var(--radius-lg);
-    transition: var(--transition);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-}
-
-.card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--primary-gradient);
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-}
-
-/* 6. Image Showcase */
+/* 7. Image Handling */
 .memory-img {
     width: 100%;
     height: 180px;
     object-fit: cover;
     border-radius: var(--radius-md);
-    margin-bottom: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: var(--transition);
 }
 
-.card:hover .memory-img {
-    transform: scale(1.02);
-}
-
-/* 7. Footer */
-.footer {
-    text-align: center;
-    padding: 60px 0 30px;
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-/* 8. Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .glass-card {
+        padding: 1.5rem;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 9. Responsive */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 28px;
-    }
-
-    .message-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-card {
-        padding: 20px;
-        margin: 20px 0;
-    }
-
-    .navbar {
-        height: 60px;
+    .note-card:hover {
+        transform: translateY(-4px);
     }
 }

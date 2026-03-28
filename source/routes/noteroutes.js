@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const noteController = require('../controllers/notecontroller');
 const auth = require('../middleware/auth');
-const uploadCloud = require('../middleware/cloudinaryConfig');
+const { uploadCloud } = require('../middleware/cloudinaryConfig');
 
 
 router.post('/', auth, uploadCloud.single('image'), noteController.createNote);
