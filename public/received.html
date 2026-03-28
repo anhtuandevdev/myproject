@@ -8,10 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
     <script src="components/create-note-modal.js"></script>
+    <script src="components/view-note-modal.js"></script>
     <link rel="stylesheet" href="style.css">
 
     <script src="components/header.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
@@ -54,14 +57,20 @@
         }
 
         @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         .shimmer-text {
             background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
             background-size: 200% auto;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shimmer 3s linear infinite;
         }
@@ -71,19 +80,22 @@
 <body class="bg-indigo-50/30 dark:bg-slate-900 min-h-screen p-4 md:p-10">
     <main class="max-w-6xl mx-auto mt-10">
         <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white dark:bg-slate-800/40 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white dark:bg-slate-800/40 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl">
             <div class="flex items-center gap-6">
-                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                <div
+                    class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
                     ✉️
                 </div>
                 <div>
                     <h1 class="text-4xl font-black text-slate-800 dark:text-white">Hộp thư thời gian</h1>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá những khoảnh khắc đang đợi bạn mở khóa.</p>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá những khoảnh khắc đang đợi bạn mở
+                        khóa.</p>
                 </div>
             </div>
             <button onclick="toggleModal(true)"
-                class="bg-slate-900 dark:bg-indigo-600 text-white px-10 py-4 rounded-2xl hover:bg-indigo-700 shadow-xl transition-all active:scale-95 font-bold flex items-center gap-2">
-                Viết một lá thư mới
+                class="bg-indigo-600 text-white px-8 py-4 rounded-2xl hover:bg-indigo-700 shadow-xl transition-all active:scale-95 font-bold flex items-center gap-2">
+                <span>+</span> Niêm phong lời nhắn mới
             </button>
         </div>
 
@@ -191,14 +203,15 @@
                     }
 
                     return `
-                    <div class="received-card ${isLocked ? 'locked' : ''} glass-card relative overflow-hidden flex flex-col min-h-[440px] ${isLocked ? 'bg-white' : 'unlocked-bg border border-indigo-100 dark:border-indigo-900/50 shadow-indigo-100/50 dark:shadow-indigo-950/20'}">
+                    <div onclick="${isLocked ? '' : `openNoteModal('${note._id}')`}" 
+                         class="received-card ${isLocked ? 'locked' : 'cursor-pointer hover:scale-[1.02] transition-transform'} glass-card relative overflow-hidden flex flex-col min-h-[440px] ${isLocked ? 'bg-white' : 'unlocked-bg border border-indigo-100 dark:border-indigo-900/50 shadow-indigo-100/50 dark:shadow-indigo-950/20'}">
                         
                         <!-- Status Badge & Menu -->
-                        <div class="p-6 pb-0 flex justify-between items-start">
+                        <div class="p-6 pb-0 flex justify-between items-start relative z-10">
                              <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-2xl rounded-2xl shadow-sm">
                                 ${isLocked ? '🔒' : '📜'}
                             </div>
-                            <button onclick="deleteNote('${note._id}')" 
+                            <button onclick="event.stopPropagation(); deleteNote('${note._id}')" 
                                     class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>

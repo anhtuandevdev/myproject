@@ -9,4 +9,7 @@ router.post('/logout', auth, userController.logout);
 router.post('/forgot-password', userController.forgotPassword);
 router.post('/reset-password', userController.resetPassword);
 
+router.post('/change-password', auth, userController.updatePassword);
+router.delete('/delete-account', auth, userController.deleteAccount);
+
 module.exports = router;

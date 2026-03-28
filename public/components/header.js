@@ -1,4 +1,3 @@
-// 1. CHẠY NGAY LẬP TỨC: Thiết lập theme cho thẻ html
 (function initTheme() {
     const theme = localStorage.getItem('theme');
     if (theme === 'dark') {
@@ -9,7 +8,6 @@
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 2. Lấy thông tin user
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const username = user.name || 'Thành viên';
 
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-    // Xử lý Click Dropdown
     const btn = document.getElementById('user-menu-btn');
     const dropdown = document.getElementById('user-dropdown');
     if (btn && dropdown) {
@@ -61,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.onclick = () => dropdown.classList.add('hidden');
     }
 
-    // Xử lý Đăng xuất
     const logoutBtn = document.getElementById('logout-btn-header');
     if (logoutBtn) {
         logoutBtn.onclick = () => {

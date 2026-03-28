@@ -12,7 +12,9 @@
     <script src="components/header.js"></script>
     <script src="components/create-note-modal.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -52,7 +54,7 @@
         .nav-card:hover {
             transform: scale(1.02);
         }
-        
+
         .floating-button {
             box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
         }
@@ -61,26 +63,31 @@
 
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen pb-20">
     <div class="max-w-6xl mx-auto px-4 md:px-8 mt-10">
-        
+
         <!-- Welcome Section -->
         <div class="mb-12">
             <h1 class="text-4xl font-extrabold text-slate-800 dark:text-white mb-2">Chào bạn quay lại! 👋</h1>
-            <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá và quản lý những món quà từ thời gian của bạn.</p>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá và quản lý những món quà từ thời gian của
+                bạn.</p>
         </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <div class="stat-card glass-card p-6 border-l-4 border-indigo-500">
                 <div class="flex items-center gap-4 mb-2">
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-xl">📤</div>
+                    <div
+                        class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-xl">
+                        📤</div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã gửi</p>
                 </div>
                 <h3 id="stat-sent" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
             </div>
-            
+
             <div class="stat-card glass-card p-6 border-l-4 border-blue-500">
                 <div class="flex items-center gap-4 mb-2">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-xl">📩</div>
+                    <div
+                        class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-xl">
+                        📩</div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã nhận</p>
                 </div>
                 <h3 id="stat-received" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
@@ -88,7 +95,9 @@
 
             <div class="stat-card glass-card p-6 border-l-4 border-orange-500">
                 <div class="flex items-center gap-4 mb-2">
-                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center text-xl">🔒</div>
+                    <div
+                        class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center text-xl">
+                        🔒</div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đang khóa</p>
                 </div>
                 <h3 id="stat-locked" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
@@ -96,7 +105,9 @@
 
             <div class="stat-card glass-card p-6 border-l-4 border-green-500">
                 <div class="flex items-center gap-4 mb-2">
-                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-xl">🔓</div>
+                    <div
+                        class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-xl">
+                        🔓</div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Đã mở</p>
                 </div>
                 <h3 id="stat-unlocked" class="text-3xl font-black text-slate-800 dark:text-white">0</h3>
@@ -105,29 +116,43 @@
 
         <!-- Navigation Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <a href="received.html" class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
-                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition duration-500">
+            <a href="received.html"
+                class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                <div
+                    class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition duration-500">
                     📩
                 </div>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Hộp Thư Đến</h2>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Khám phá những lời nhắn bí mật mà người khác hoặc chính bạn trong quá khứ đã chuẩn bị.</p>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Khám phá những lời nhắn bí
+                        mật mà người khác hoặc chính bạn trong quá khứ đã chuẩn bị.</p>
                 </div>
-                <div class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                <div
+                    class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
                 </div>
             </a>
 
-            <a href="sent.html" class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
-                <div class="w-16 h-16 bg-slate-800 dark:bg-indigo-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition duration-500">
+            <a href="sent.html"
+                class="nav-card group relative overflow-hidden glass-card p-10 flex flex-col gap-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                <div
+                    class="w-16 h-16 bg-slate-800 dark:bg-indigo-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition duration-500">
                     📤
                 </div>
                 <div>
                     <h2 class="text-3xl font-black text-slate-800 dark:text-white mb-2">Hộp Thư Đi</h2>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Nơi lưu giữ các viên nhộng thời gian bạn đã niêm phong và gửi đến tương lai.</p>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Nơi lưu giữ các viên nhộng
+                        thời gian bạn đã niêm phong và gửi đến tương lai.</p>
                 </div>
-                <div class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                <div
+                    class="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
                 </div>
             </a>
         </div>

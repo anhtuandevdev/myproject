@@ -1,12 +1,6 @@
-/* Time Capsule - Future Messages Theme 
-  Author: Tuấn & Gemini
-  Style: Modern Glassmorphism, Adaptive Dark Mode
-*/
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap');
 
 :root {
-    /* Light Mode Colors */
     --bg-body: #f8fafc;
     --bg-gradient: linear-gradient(-45deg, #f1f5f9, #e2e8f0, #f8fafc, #f1f5f9);
     --glass-bg: rgba(255, 255, 255, 0.7);
@@ -16,7 +10,6 @@
     --input-bg: #ffffff;
     --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 
-    /* Global Accents */
     --primary: #6366f1;
     --primary-hover: #4f46e5;
     --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
@@ -26,7 +19,6 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Overrides */
 .dark {
     --bg-body: #0f172a;
     --bg-gradient: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #111827);
@@ -38,7 +30,6 @@
     --card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
 }
 
-/* 1. Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -58,26 +49,15 @@ body {
 }
 
 @keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     font-family: 'Inter', sans-serif;
 }
 
-/* 2. Reusable Components */
 .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -101,7 +81,6 @@ h3 {
     outline: none;
 }
 
-/* 3. Typography & Utilities */
 .handwritten {
     font-family: 'Dancing Script', cursive;
     color: var(--primary);
@@ -111,7 +90,6 @@ h3 {
     color: var(--text-muted);
 }
 
-/* 4. Message Cards Styling */
 .note-card {
     position: relative;
     overflow: hidden;
@@ -138,7 +116,6 @@ h3 {
     background: linear-gradient(225deg, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
 }
 
-/* 5. Custom Loader */
 .loader {
     border: 4px solid var(--glass-border);
     border-top: 4px solid var(--primary);
@@ -149,16 +126,10 @@ h3 {
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* 6. Buttons */
 .btn-primary {
     background: var(--primary-gradient);
     color: white !important;
@@ -176,7 +147,6 @@ h3 {
     box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
-/* 7. Image Handling */
 .memory-img {
     width: 100%;
     height: 180px;
@@ -185,13 +155,7 @@ h3 {
     transition: var(--transition);
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
-    .glass-card {
-        padding: 1.5rem;
-    }
-
-    .note-card:hover {
-        transform: translateY(-4px);
-    }
+    .glass-card { padding: 1.5rem; }
+    .note-card:hover { transform: translateY(-4px); }
 }

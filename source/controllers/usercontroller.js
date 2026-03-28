@@ -119,3 +119,31 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.id);
+        
+        if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
+            return res.status(400).json({ message: "Mật khẩu cũ không chính xác!" });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+        res.json({ message: "Đã đổi mật khẩu thành công!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.deleteAccount = async (req, res) => {
+    const Note = require('../models/note');
+    try {
+        await Note.deleteMany({ userId: req.user.id });
+        await User.findByIdAndDelete(req.user.id);
+        res.json({ message: "Vĩnh biệt! Tài khoản và dữ liệu đã bị xóa hoàn toàn." });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

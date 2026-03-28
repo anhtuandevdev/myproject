@@ -55,8 +55,13 @@ exports.createNote = async (req, res) => {
 
 exports.getSentNotes = async (req, res) => {
     try {
-        const notes = await Note.find({ userId: req.user.id }).sort({ createdAt: -1 });
-        res.json(notes);
+        const notes = await Note.find({ userId: req.user.id })
+            .populate('userId', 'name email')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const notesWithSender = notes.map(n => ({ ...n, sender: n.userId }));
+        res.json(notesWithSender);
     } catch (error) {
         console.error("Lỗi Sent:", error);
         res.status(500).json({ error: error.message });
@@ -65,8 +70,13 @@ exports.getSentNotes = async (req, res) => {
 
 exports.getReceivedNotes = async (req, res) => {
     try {
-        const notes = await Note.find({ recipientEmail: req.user.email }).sort({ createdAt: -1 });
-        res.json(notes);
+        const notes = await Note.find({ recipientEmail: req.user.email })
+            .populate('userId', 'name email')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const notesWithSender = notes.map(n => ({ ...n, sender: n.userId }));
+        res.json(notesWithSender);
     } catch (error) {
         console.error("Lỗi Received:", error);
         res.status(500).json({ error: error.message });

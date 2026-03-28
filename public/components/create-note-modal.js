@@ -1,5 +1,3 @@
-// components/create-note-modal.js
-
 (function () {
     const modalHTML = `
     <div id="create-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300">
@@ -36,7 +34,6 @@
         </div>
     </div>`;
 
-    // Hàm khởi tạo - Đảm bảo body đã sẵn sàng
     function initModal() {
         if (!document.getElementById('create-modal')) {
             document.body.insertAdjacentHTML('beforeend', modalHTML);
@@ -44,7 +41,6 @@
         }
     }
 
-    // Đưa hàm ra phạm vi toàn cục (global) để nút bấm có thể gọi
     window.toggleModal = function (show) {
         const modal = document.getElementById('create-modal');
         const content = document.getElementById('modal-content');
@@ -52,6 +48,12 @@
 
         if (show) {
             modal.classList.remove('hidden');
+
+            const now = new Date();
+            const tzOffset = now.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            document.getElementById('availableAt').min = localISOTime;
+
             setTimeout(() => { modal.classList.add('opacity-100'); content.classList.add('scale-100'); }, 10);
         } else {
             modal.classList.remove('opacity-100'); content.classList.remove('scale-100');
@@ -61,6 +63,11 @@
 
     function setupEventListeners() {
         document.getElementById('close-modal-btn').onclick = () => toggleModal(false);
+
+        // Đóng khi nhấn ra ngoài backdrop
+        document.getElementById('create-modal').onclick = (e) => {
+            if (e.target.id === 'create-modal') toggleModal(false);
+        };
 
         const fileInput = document.getElementById('image-input');
         fileInput.onchange = function () {
@@ -76,6 +83,11 @@
             const token = localStorage.getItem('token');
 
             if (!token) return alert('Vui lòng đăng nhập lại!');
+
+            const availableAt = document.getElementById('availableAt').value;
+            if (new Date(availableAt) <= new Date()) {
+                return alert('⚠️ Thời gian mở khóa phải ở trong tương lai!');
+            }
 
             const formData = new FormData();
             formData.append('title', document.getElementById('title').value);
@@ -109,7 +121,6 @@
                     document.getElementById('note-form').reset();
                     document.getElementById('file-status').innerHTML = '🖼️ Đính kèm ảnh kỷ niệm';
 
-                    // Reload data based on current page
                     if (typeof fetchStats === 'function') fetchStats();
                     if (typeof loadNotes === 'function') loadNotes();
                 } else {
@@ -126,7 +137,6 @@
         };
     }
 
-    // Chạy khi DOM đã sẵn sàng
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initModal);
     } else {
