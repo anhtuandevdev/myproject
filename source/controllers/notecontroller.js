@@ -1,5 +1,5 @@
 const Note = require('../models/note');
-const nodemailer = require('nodemailer');
+const { sendMail } = require('../utils/mailer');
 const cloudinary = require('../middleware/cloudinaryConfig').cloudinary;
 
 exports.createNote = async (req, res) => {
@@ -12,21 +12,13 @@ exports.createNote = async (req, res) => {
             content,
             availableAt,
             recipientEmail: recipientEmail || req.user.email,
-            imageUrl: req.file ? req.file.path : ''
+            imageUrl: req.file ? req.file.path : '',
+            imagePublicId: req.file ? req.file.filename : ''
         });
 
         await newNote.save();
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
         const mailOptions = {
-            from: `"TimeCapsule" <${process.env.EMAIL_USER}>`,
             to: newNote.recipientEmail,
             subject: `📩 Bạn có một lời nhắn tương lai đang chờ!`,
             html: `
@@ -40,11 +32,11 @@ exports.createNote = async (req, res) => {
             `
         };
 
-        transporter.sendMail(mailOptions, (err) => {
-            if (!err) {
-                newNote.isNotifiedSent = true;
-                newNote.save();
-            }
+        sendMail(mailOptions).then(() => {
+            newNote.isNotifiedSent = true;
+            newNote.save();
+        }).catch(err => {
+            console.error("Lỗi gửi thông báo cho người nhận:", err);
         });
 
         res.status(201).json({ message: "Đã lưu lời nhắn cho tương lai!", note: newNote });
@@ -124,13 +116,8 @@ exports.deleteNote = async (req, res) => {
             return res.status(404).json({ message: "Không tìm thấy lời nhắn hoặc bạn không có quyền xóa!" });
         }
 
-        if (note.imageUrl) {
-            const urlParts = note.imageUrl.split('/');
-            const fileNameWithExtension = urlParts[urlParts.length - 1];
-            const publicIdWithoutExtension = fileNameWithExtension.split('.')[0];
-            const fullPublicId = `time_capsule_notes/${publicIdWithoutExtension}`;
-
-            await cloudinary.uploader.destroy(fullPublicId);
+        if (note.imagePublicId) {
+            await cloudinary.uploader.destroy(note.imagePublicId);
         }
 
         res.json({ message: "Đã tiêu hủy lời nhắn thành công!" });

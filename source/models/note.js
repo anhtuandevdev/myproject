@@ -9,6 +9,7 @@ const NoteSchema = new mongoose.Schema({
     isSent: { type: Boolean, default: false },
     isNotifiedOpened: { type: Boolean, default: false },
     imageUrl: { type: String, default: '' },
+    imagePublicId: { type: String, default: '' },
     createdAt: { type: Date, default: Date.now }
 });
 
