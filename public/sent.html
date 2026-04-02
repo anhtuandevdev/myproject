@@ -11,6 +11,7 @@
     
     <!-- Components -->
     <script src="components/header.js"></script>
+    <script src="components/sidebar.js"></script>
     <script src="components/create-note-modal.js"></script>
     <script src="components/view-note-modal.js"></script>
     <script src="components/note-card.js"></script>
@@ -49,14 +50,6 @@
         </div>
     </main>
 
-    <!-- Floating Back Button -->
-    <a href="index.html"
-        class="fixed bottom-10 right-10 flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-2xl hover:bg-indigo-600 transition-all hover:-translate-y-2 active:scale-95 z-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        <span>Về Trang Chủ</span>
-    </a>
 
     <script>
         const token = localStorage.getItem('token');
