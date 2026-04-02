@@ -1,4 +1,5 @@
 const cron = require('node-cron');
+const https = require('https');
 const { sendMail } = require('./mailer');
 const Note = require('../models/note');
 const cloudinary = require('../middleware/cloudinaryConfig').cloudinary;
@@ -37,6 +38,17 @@ cron.schedule('* * * * *', async () => {
         }
     } catch (error) {
         console.error('❌ Lỗi Cron Job Mở Khóa:', error);
+    }
+});
+
+cron.schedule('*/5 * * * *', () => {
+    const url = process.env.SERVER_URL;
+    if (url) {
+        https.get(url, (res) => {
+            console.log(`📡 [Keep-alive] Ping: ${url} thành công (Status: ${res.statusCode})`);
+        }).on('error', (err) => {
+            console.error(`❌ [Keep-alive] Lỗi ping tới ${url}:`, err.message);
+        });
     }
 });
 

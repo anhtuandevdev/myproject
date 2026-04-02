@@ -47,9 +47,21 @@ exports.createNote = async (req, res) => {
 
 exports.getSentNotes = async (req, res) => {
     try {
-        const notes = await Note.find({ userId: req.user.id })
+        const { search, sort } = req.query;
+        let query = { userId: req.user.id };
+
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const sortDir = sort === 'oldest' ? 1 : -1;
+
+        const notes = await Note.find(query)
             .populate('userId', 'name email')
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: sortDir })
             .lean();
 
         const notesWithSender = notes.map(n => ({ ...n, sender: n.userId }));
@@ -62,9 +74,21 @@ exports.getSentNotes = async (req, res) => {
 
 exports.getReceivedNotes = async (req, res) => {
     try {
-        const notes = await Note.find({ recipientEmail: req.user.email })
+        const { search, sort } = req.query;
+        let query = { recipientEmail: req.user.email };
+
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const sortDir = sort === 'oldest' ? 1 : -1;
+
+        const notes = await Note.find(query)
             .populate('userId', 'name email')
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: sortDir })
             .lean();
 
         const notesWithSender = notes.map(n => ({ ...n, sender: n.userId }));
