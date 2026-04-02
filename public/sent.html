@@ -7,77 +7,30 @@
     <title>Lời nhắn đã gửi | TimeCapsule</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Components -->
+    <script src="components/header.js"></script>
     <script src="components/create-note-modal.js"></script>
     <script src="components/view-note-modal.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="components/note-card.js"></script>
+    <script src="components/search-bar.js"></script>
 
-    <script src="components/header.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .sent-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .sent-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
-        }
-
-        .handwritten {
-            font-family: 'Dancing Script', cursive;
-        }
-
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 400px;
-        }
-
-        /* Pulsing animation for locked icons */
-        @keyframes pulse-locked {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.6;
-                transform: scale(1.1);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .locked-pulse {
-            animation: pulse-locked 2s infinite ease-in-out;
-        }
-    </style>
 </head>
 
 <body class="bg-indigo-50/50 dark:bg-slate-900 min-h-screen p-4 md:p-10">
     <main class="max-w-6xl mx-auto mt-10">
         <!-- Header -->
-        <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white/40 dark:bg-indigo-950/20 backdrop-blur-xl p-8 rounded-3xl border border-white/50 dark:border-white/5">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white/40 dark:bg-indigo-950/20 backdrop-blur-xl p-8 rounded-3xl border border-white/50 dark:border-white/5 shadow-xl">
             <div>
                 <h1 class="text-4xl font-black text-slate-800 dark:text-white flex items-center gap-3">
                     Nhật ký gửi đi <span class="text-3xl">📤</span>
                 </h1>
-                <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">Danh sách những viên nhộng thời gian bạn
-                    đã niêm phong.</p>
+                <p class="text-slate-500 dark:text-slate-400 font-medium mt-1">Danh sách những viên nhộng thời gian bạn đã niêm phong.</p>
             </div>
             <button onclick="toggleModal(true)"
                 class="bg-indigo-600 text-white px-8 py-4 rounded-2xl hover:bg-indigo-700 shadow-xl transition-all active:scale-95 font-bold flex items-center gap-2">
@@ -85,13 +38,18 @@
             </button>
         </div>
 
+        <!-- Search UI Container -->
+        <div id="search-container"></div>
+
+        <!-- Notes List Container -->
         <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <div class="col-span-full loader-container">
+            <div class="col-span-full flex justify-center py-20">
                 <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
         </div>
     </main>
 
+    <!-- Floating Back Button -->
     <a href="index.html"
         class="fixed bottom-10 right-10 flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-2xl hover:bg-indigo-600 transition-all hover:-translate-y-2 active:scale-95 z-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,54 +62,11 @@
         const token = localStorage.getItem('token');
         if (!token) window.location.href = 'login.html';
 
-        async function deleteNote(id) {
-            if (!confirm("⚠️ Bạn muốn tiêu hủy viên nhộng thời gian này vĩnh viễn?")) return;
-            try {
-                const res = await fetch(`/api/notes/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    alert("🚀 Đã tiêu hủy thành công!");
-                    loadNotes();
-                }
-            } catch (err) {
-                alert("Lỗi hệ thống!");
-            }
-        }
-
-        function updateCountdowns() {
-            const timers = document.querySelectorAll('.countdown-timer');
-            timers.forEach(timer => {
-                const targetDate = new Date(timer.getAttribute('data-date')).getTime();
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-
-                if (distance < 0) {
-                    timer.innerHTML = `
-                        <span class="flex items-center gap-1.5 text-blue-500 font-black">
-                            🔓 Đã đến tay người nhận
-                        </span>`;
-                    return;
-                }
-
-                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timer.innerHTML = `
-                    <div class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold">
-                        <span class="text-xs uppercase opacity-60">Niêm phong trong:</span>
-                        <span>${d}d ${h}h ${m}m ${s}s</span>
-                    </div>`;
-            });
-        }
-
-        async function loadNotes() {
+        async function loadNotes(search = '', sort = 'newest') {
             const container = document.getElementById('notes-container');
             try {
-                const res = await fetch('/api/notes/sent', {
+                const query = `?search=${encodeURIComponent(search)}&sort=${sort}`;
+                const res = await fetch('/api/notes/sent' + query, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -169,70 +84,63 @@
                 if (!Array.isArray(notes) || notes.length === 0) {
                     container.innerHTML = `
                         <div class="col-span-full text-center py-20 bg-white/40 dark:bg-slate-800/40 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
-                            <p class="text-slate-400 dark:text-slate-500 text-xl font-medium mb-6">Bạn chưa gửi lời nhắn nào.</p>
-                            <button onclick="toggleModal(true)" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition">Gửi Lời Nhắn Đầu Tiên!</button>
+                            <p class="text-slate-400 dark:text-slate-500 text-xl font-medium mb-6">Bạn chưa gửi lời nhắn nào phù hợp.</p>
+                            <button onclick="toggleModal(true)" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition">Gửi lời nhắn mới ngay!</button>
                         </div>`;
                     return;
                 }
 
-                container.innerHTML = notes.map(note => {
-                    const isLocked = new Date(note.availableAt) > new Date();
-                    let displayImageUrl = note.imageUrl;
+                container.innerHTML = notes.map(note => renderNoteCard(note, 'sent')).join('');
 
-                    if (note.imageUrl && isLocked) {
-                        displayImageUrl = note.imageUrl.replace('/upload/', '/upload/e_blur:1000,f_auto,q_auto/');
-                    }
-
-                    return `
-                    <div onclick="${isLocked ? '' : `openNoteModal('${note._id}')`}" 
-                         class="sent-card ${isLocked ? 'locked' : 'cursor-pointer hover:scale-[1.02] transition-transform'} glass-card relative overflow-hidden flex flex-col min-h-[420px] bg-white border-t-[10px] ${isLocked ? 'border-indigo-400 dark:border-indigo-600' : 'border-blue-400 dark:border-blue-600'}">
-                        
-                        <!-- Top Action Area -->
-                        <div class="p-6 pb-0 flex justify-between items-start relative z-10">
-                             <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-2xl shadow-sm ${isLocked ? 'locked-pulse' : ''}">
-                                ${isLocked ? '🔒' : '✉️'}
-                            </div>
-                            <button onclick="event.stopPropagation(); deleteNote('${note._id}')" 
-                                    class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Note Content Area -->
-                        <div class="p-6 flex-1">
-                            <h3 class="text-2xl font-black text-slate-800 dark:text-white mb-2 line-clamp-1">${note.title}</h3>
-                            <div class="flex items-center gap-2 mb-4">
-                                <span class="text-[10px] font-black uppercase text-indigo-500 tracking-widest bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded">Tới: ${note.recipientEmail}</span>
-                            </div>
-
-                            ${note.imageUrl ? `
-                                <div class="relative w-full h-40 rounded-2xl overflow-hidden mb-4 border border-slate-100 dark:border-slate-800">
-                                    <img src="${displayImageUrl}" class="w-full h-full object-cover transition duration-700" alt="Memory">
-                                    ${isLocked ? '<div class="absolute inset-0 bg-indigo-900/20 backdrop-blur-sm"></div>' : ''}
-                                </div>` : ''}
-
-                            <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                <p class="handwritten text-2xl text-slate-700 dark:text-slate-300 line-clamp-3">"${note.content}"</p>
-                            </div>
-                        </div>
-
-                        <!-- Footer Countdown -->
-                        <div class="px-6 py-5 bg-slate-50/50 dark:bg-slate-800/30 border-t border-dashed border-slate-200 dark:border-slate-700">
-                            <div class="countdown-timer" data-date="${note.availableAt}">
-                                Đang tính toán...
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-
-                setInterval(updateCountdowns, 1000);
                 updateCountdowns();
             } catch (err) {
-                container.innerHTML = `<p class="text-center text-red-500 py-20 font-bold">⚠️ Không thể kết nối đến cỗ máy thời gian!</p>`;
+                console.error(err);
+                container.innerHTML = `<p class="col-span-full text-center text-red-500 py-20 font-bold">⚠️ Không thể kết nối đến cỗ máy thời gian!</p>`;
             }
         }
-        loadNotes();
+
+        function updateCountdowns() {
+            const timers = document.querySelectorAll('.countdown-timer');
+            timers.forEach(timer => {
+                const targetDate = new Date(timer.getAttribute('data-date')).getTime();
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    timer.innerHTML = `<span class="flex items-center gap-1.5 text-blue-500 font-black">🔓 Đã đến tay người nhận</span>`;
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timer.innerHTML = `<div class="flex items-center gap-2 text-indigo-600 font-bold text-sm uppercase"><span>Niêm phong:</span><span>${d}d ${h}h ${m}m ${s}s</span></div>`;
+            });
+        }
+
+        async function deleteNote(id) {
+            if (!confirm("⚠️ Bạn muốn tiêu hủy viên nhộng thời gian này vĩnh viễn?")) return;
+            try {
+                const res = await fetch(`/api/notes/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    alert("🚀 Đã tiêu hủy thành công!");
+                    loadNotes();
+                }
+            } catch (err) { alert("Lỗi khi xóa!"); }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSearchUI('search-container', (search, sort) => {
+                loadNotes(search, sort);
+            });
+            loadNotes();
+            setInterval(updateCountdowns, 1000);
+        });
     </script>
 </body>
-
 </html>

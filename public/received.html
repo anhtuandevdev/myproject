@@ -7,90 +7,32 @@
     <title>Lời nhắn đã nhận | TimeCapsule</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="https://fav.farm/⏳" />
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Components -->
+    <script src="components/header.js"></script>
     <script src="components/create-note-modal.js"></script>
     <script src="components/view-note-modal.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="components/note-card.js"></script>
+    <script src="components/search-bar.js"></script>
 
-    <script src="components/header.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .received-card {
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .received-card:hover {
-            transform: translateY(-10px) rotate(-0.5deg);
-        }
-
-        .received-card.locked {
-            cursor: not-allowed;
-            filter: grayscale(0.5) opacity(0.85);
-        }
-
-        .handwritten {
-            font-family: 'Dancing Script', cursive;
-        }
-
-        .loader-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 400px;
-        }
-
-        /* Pulsing background for unlocked notes */
-        .unlocked-bg {
-            background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%);
-        }
-
-        .dark .unlocked-bg {
-            background: linear-gradient(135deg, #78350f20 0%, #451a0330 100%);
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
-        }
-
-        .shimmer-text {
-            background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3s linear infinite;
-        }
-    </style>
 </head>
 
 <body class="bg-indigo-50/30 dark:bg-slate-900 min-h-screen p-4 md:p-10">
     <main class="max-w-6xl mx-auto mt-10">
-        <!-- Header -->
-        <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white dark:bg-slate-800/40 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white dark:bg-slate-800/40 backdrop-blur-3xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl">
             <div class="flex items-center gap-6">
-                <div
-                    class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
-                    ✉️
+                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                    📩
                 </div>
                 <div>
-                    <h1 class="text-4xl font-black text-slate-800 dark:text-white">Hộp thư thời gian</h1>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá những khoảnh khắc đang đợi bạn mở
-                        khóa.</p>
+                    <h1 class="text-4xl font-black text-slate-800 dark:text-white">Hộp thư nhận</h1>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium">Khám phá những món quà thời gian được gửi tới bạn.</p>
                 </div>
             </div>
             <button onclick="toggleModal(true)"
@@ -99,13 +41,18 @@
             </button>
         </div>
 
+        <!-- Search UI Container -->
+        <div id="search-container"></div>
+
+        <!-- Notes List Container -->
         <div id="notes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <div class="col-span-full loader-container">
+            <div class="col-span-full flex justify-center py-20">
                 <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
         </div>
     </main>
 
+    <!-- Floating Back Button -->
     <a href="index.html"
         class="fixed bottom-10 right-10 flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-2xl hover:bg-indigo-600 transition-all hover:-translate-y-2 active:scale-95 z-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -118,58 +65,11 @@
         const token = localStorage.getItem('token');
         if (!token) window.location.href = 'login.html';
 
-        async function deleteNote(id) {
-            if (!confirm("⚠️ Bạn muốn tiêu hủy kỷ niệm này vĩnh viễn khỏi dòng thời gian?")) return;
-            try {
-                const res = await fetch(`/api/notes/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    alert("🚀 Đã tiêu hủy thành công!");
-                    loadNotes();
-                } else {
-                    const data = await res.json();
-                    alert(data.message || "Không thể xóa!");
-                }
-            } catch (err) {
-                alert("Lỗi máy chủ!");
-            }
-        }
-
-        function updateCountdowns() {
-            const timers = document.querySelectorAll('.countdown-timer');
-            timers.forEach(timer => {
-                const targetDate = new Date(timer.getAttribute('data-date')).getTime();
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-
-                if (distance < 0) {
-                    timer.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            <span class="text-green-600 dark:text-green-400 font-black">🔓 Đã sẵn sàng mở thư</span>
-                        </div>`;
-                    return;
-                }
-
-                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timer.innerHTML = `
-                    <div class="flex items-center gap-2 text-red-500 dark:text-red-400 font-bold">
-                        <span class="text-[10px] uppercase font-bold opacity-60">Mở trong:</span>
-                        <span>${d}d ${h}h ${m}m ${s}s</span>
-                    </div>`;
-            });
-        }
-
-        async function loadNotes() {
+        async function loadNotes(search = '', sort = 'newest') {
             const container = document.getElementById('notes-container');
             try {
-                const res = await fetch('/api/notes/received', {
+                const query = `?search=${encodeURIComponent(search)}&sort=${sort}`;
+                const res = await fetch('/api/notes/received' + query, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -187,80 +87,63 @@
                 if (!Array.isArray(notes) || notes.length === 0) {
                     container.innerHTML = `
                         <div class="col-span-full text-center py-20 bg-white/40 dark:bg-slate-800/40 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
-                             <div class="text-6xl mb-6">🏜️</div>
-                            <p class="text-slate-400 dark:text-slate-500 text-xl font-medium mb-6">Bạn chưa nhận được lời nhắn nào.</p>
-                            <button onclick="toggleModal(true)" class="text-indigo-600 underline font-bold">Tự gửi một món quà thời gian cho bản thân?</button>
+                             <div class="text-6xl mb-6"> Desert 🏜️</div>
+                            <p class="text-slate-400 dark:text-slate-500 text-xl font-medium mb-6">Không tìm thấy lời nhắn nào khớp với yêu cầu.</p>
+                            <button onclick="toggleModal(true)" class="text-indigo-600 underline font-bold">Tự gửi kỷ niệm cho bản thân?</button>
                         </div>`;
                     return;
                 }
 
-                container.innerHTML = notes.map(note => {
-                    const isLocked = new Date(note.availableAt) > new Date();
-                    let displayImageUrl = note.imageUrl;
-
-                    if (note.imageUrl && isLocked) {
-                        displayImageUrl = note.imageUrl.replace('/upload/', '/upload/e_blur:1000,f_auto,q_auto/');
-                    }
-
-                    return `
-                    <div onclick="${isLocked ? '' : `openNoteModal('${note._id}')`}" 
-                         class="received-card ${isLocked ? 'locked' : 'cursor-pointer hover:scale-[1.02] transition-transform'} glass-card relative overflow-hidden flex flex-col min-h-[440px] ${isLocked ? 'bg-white' : 'unlocked-bg border border-indigo-100 dark:border-indigo-900/50 shadow-indigo-100/50 dark:shadow-indigo-950/20'}">
-                        
-                        <!-- Status Badge & Menu -->
-                        <div class="p-6 pb-0 flex justify-between items-start relative z-10">
-                             <div class="w-12 h-12 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-2xl rounded-2xl shadow-sm">
-                                ${isLocked ? '🔒' : '📜'}
-                            </div>
-                            <button onclick="event.stopPropagation(); deleteNote('${note._id}')" 
-                                    class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Content Area -->
-                        <div class="p-6 flex-1">
-                            <h3 class="text-2xl font-black ${isLocked ? 'text-slate-800 dark:text-white' : 'shimmer-text'} mb-4 line-clamp-1">${note.title}</h3>
-                            
-                            ${note.imageUrl ? `
-                                <div class="relative w-full h-40 rounded-3xl overflow-hidden mb-6 group border border-slate-100 dark:border-slate-800 shadow-lg">
-                                    <img src="${displayImageUrl}" class="w-full h-full object-cover" alt="Image">
-                                    ${isLocked ? `
-                                        <div class="absolute inset-0 bg-indigo-950/40 backdrop-blur-xl flex flex-col items-center justify-center text-white">
-                                            <span class="text-[10px] font-black uppercase tracking-[0.3em] mb-2">Đang Niêm Phong</span>
-                                            <div class="w-1 bg-white/30 h-8 rounded-full"></div>
-                                        </div>` : ''}
-                                </div>` : ''}
-
-                            <div class="relative">
-                                ${isLocked
-                            ? '<div class="space-y-4 opacity-40"><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-full"></div><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-4/5"></div><div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-3/4"></div></div>'
-                            : `<p class="handwritten text-2xl text-slate-700 dark:text-slate-300 line-clamp-3">"${note.content}"</p>`
-                        }
-                            </div>
-                        </div>
-
-                        <!-- Footer Countdown & Meta -->
-                        <div class="px-6 py-6 bg-slate-50/50 dark:bg-slate-800/40 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-col gap-2">
-                            <div class="countdown-timer" data-date="${note.availableAt}">
-                                Đang tải...
-                            </div>
-                            <div class="flex justify-between items-center mt-2 opacity-50 text-[10px] font-black uppercase tracking-widest">
-                                <span>Niêm phong vào:</span>
-                                <span>${new Date(note.createdAt).toLocaleDateString('vi-VN')}</span>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-
-                setInterval(updateCountdowns, 1000);
+                container.innerHTML = notes.map(note => renderNoteCard(note, 'received')).join('');
                 updateCountdowns();
-
             } catch (err) {
-                container.innerHTML = `<p class="text-center text-red-500 py-20 font-bold">⚠️ Hệ thống hộp thư thời gian gặp sự cố!</p>`;
+                console.error(err);
+                container.innerHTML = `<p class="col-span-full text-center text-red-500 py-20 font-bold">⚠️ Hệ thống gặp sự cố tải dữ liệu!</p>`;
             }
         }
-        loadNotes();
+
+        function updateCountdowns() {
+            const timers = document.querySelectorAll('.countdown-timer');
+            timers.forEach(timer => {
+                const targetDate = new Date(timer.getAttribute('data-date')).getTime();
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    timer.innerHTML = `<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span><span class="text-green-600 font-black">🔓 Sẵn sàng mở</span></div>`;
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timer.innerHTML = `<div class="flex items-center gap-1 text-red-500 font-bold text-sm uppercase opacity-75 tracking-tight"><span>Mở trong:</span><span>${d}d ${h}h ${m}m ${s}s</span></div>`;
+            });
+        }
+
+        async function deleteNote(id) {
+            if (!confirm("⚠️ Bạn muốn tiêu hủy kỷ niệm này vĩnh viễn?")) return;
+            try {
+                const res = await fetch(`/api/notes/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    alert("🚀 Đã tiêu hủy thành công!");
+                    loadNotes();
+                }
+            } catch (err) { alert("Lỗi khi xóa!"); }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSearchUI('search-container', (search, sort) => {
+                loadNotes(search, sort);
+            });
+            loadNotes();
+            setInterval(updateCountdowns, 1000);
+        });
     </script>
 </body>
-
 </html>
