@@ -1,5 +1,7 @@
 (function initSidebar() {
     document.addEventListener('DOMContentLoaded', () => {
+        if (document.getElementById('main-sidebar')) return;
+
         const sidebarHTML = `
         <aside id="main-sidebar" class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800 z-40 transition-all duration-300 hidden md:block">
             <div class="flex flex-col h-full p-6">
@@ -62,13 +64,17 @@
         document.body.insertAdjacentHTML('beforeend', sidebarHTML);
 
         // Highlight active link
-        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-        document.querySelectorAll('.nav-item').forEach(item => {
-            if (item.getAttribute('href') === currentPath) {
-                item.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/20');
-                item.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-indigo-50', 'dark:hover:bg-indigo-900/30');
-            }
-        });
+        if (window.Router) {
+            window.Router.updateActiveLinks(window.location.href);
+        } else {
+            const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/20');
+                    item.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-indigo-50', 'dark:hover:bg-indigo-900/30');
+                }
+            });
+        }
 
         // Add padding to main content for desktop sidebar
         const mainContent = document.querySelector('.max-w-6xl') || document.querySelector('main');

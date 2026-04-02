@@ -12,6 +12,7 @@
     <!-- Components -->
     <script src="components/header.js"></script>
     <script src="components/sidebar.js"></script>
+    <script src="router.js"></script>
     <script src="components/create-note-modal.js"></script>
     <script src="components/view-note-modal.js"></script>
     <script src="components/note-card.js"></script>
@@ -24,7 +25,7 @@
 </head>
 
 <body class="bg-indigo-50/50 dark:bg-slate-900 min-h-screen p-4 md:p-10">
-    <main class="max-w-6xl mx-auto mt-10">
+    <main id="main-router-view" class="max-w-6xl mx-auto mt-10">
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 bg-white/40 dark:bg-indigo-950/20 backdrop-blur-xl p-8 rounded-3xl border border-white/50 dark:border-white/5 shadow-xl">
             <div>

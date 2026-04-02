@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const username = user.name || 'Thành viên';
 
+    if (document.getElementById('main-header')) return;
+
     const headerHTML = `
-    <header class="fixed top-0 left-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg z-[100] border-b border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-300">
+    <header id="main-header" class="fixed top-0 left-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg z-[100] border-b border-slate-100 dark:border-slate-800 shadow-sm transition-colors duration-300">
         <div class="max-w-full mx-auto px-4 md:px-8 h-16 flex justify-between items-center text-slate-900 dark:text-white">
             
             <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.href='index.html'">
